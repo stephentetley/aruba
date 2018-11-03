@@ -1,8 +1,8 @@
-% queries.pl
+% queries1.pl
 
 :- use_module(library(yall)).
 
-:- use_module(structs).
+:- use_module(aruba/file_store/structs).
 
 
 
@@ -13,7 +13,7 @@ file_sys(
 
 
 demo01(Xs) :- 
-    file_sys(_,Xs).
+    file_sys(Xs).
 
 demo02_aux([X|_], T) :- 
     file_object_props(X,Props), 

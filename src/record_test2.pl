@@ -1,7 +1,7 @@
 % record_test1.pl
 
 
-:- use_module(structs).
+:- use_module(aruba/file_store/structs).
 
 
 

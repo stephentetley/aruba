@@ -1,19 +1,15 @@
-% queries.pl
+% dummy.pl
 
-:- use_module("facts/dir list.pl").
-
-demoZero(Name) :- 
-    file_store(Name, _).
 
 
 % See SWI Prolog Manual Section 4.36 for direct file system 
 % access predicates (not "file stores" / listings).
 % e.g.
 demo01 :- 
-    exists_file("facts/directories.pl").
+    exists_file("factbase/directories.pl").
 
 demo02 :- 
-    exists_file("facts/DOES_NOT_EXIST.pl").
+    exists_file("factbase/DOES_NOT_EXIST.pl").
 
 % Note 
 demo03(Ext) :- 
