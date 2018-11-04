@@ -2,8 +2,8 @@
 
 :- use_module(library(yall)).
 
+:- use_module(aruba/base/utils).
 :- use_module(aruba/file_store/structs).
-
 
 
 file_sys(

@@ -1,5 +1,9 @@
 % datetime.pl
 
+% Serialize and deserialize date-times in ISO 8601 format.
+
+% parsetime gets us a timestamp (long integer?).
+
 demo01(Stamp) :-
     parse_time("2006-12-08", iso_8601, Stamp).
 
