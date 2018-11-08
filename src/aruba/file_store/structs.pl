@@ -14,7 +14,7 @@
             , folder_object_mode/2
             , folder_object_kids/2
             , file_store_path/2
-            , file_store_elements/2            
+            , file_store_kids/2            
             ]).
 
 :- use_module(library(record)).
@@ -24,4 +24,4 @@
 
 :- record folder_object(name:text=none, modification_time:text=none, mode:text=none, kids:list=[]).
 
-:- record file_store(path:text=none, elements:list=[]).
+:- record file_store(path:text=none, kids:list=[]).

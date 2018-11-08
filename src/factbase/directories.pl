@@ -8,7 +8,7 @@
 % 
 listing( 'directories',
     file_store(
-        'D:\\coding\\fsharp\\factx-fsharp',
+        "D:\\coding\\fsharp\\factx-fsharp",
         [folder_object(
             "data",
             "2018-07-30T03:20:00",
