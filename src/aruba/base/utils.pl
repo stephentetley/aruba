@@ -30,8 +30,8 @@ format_file_size(Size, Text) :-
     KB is 1024,
     MB is 1024 * KB,
     GB is 1024 * MB,
-    (Size > GB -> format(string(Text), "~1fGB", [Size / GB])
-        ; (Size > MB -> format(string(Text), "~1fMB", [Size / MB])
-            ; (Size > KB -> format(string(Text), "~1fKB", [Size / KB])
-                ; format(string(Text), "~db", Size)))).       
+    (Size > GB -> format(string(Text), "~1f GB", [Size / GB])
+        ; (Size > MB -> format(string(Text), "~1f MB", [Size / MB])
+            ; (Size > KB -> format(string(Text), "~1f KB", [Size / KB])
+                ; format(string(Text), "~d bytes", Size)))).       
 

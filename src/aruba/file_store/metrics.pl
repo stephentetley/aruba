@@ -1,7 +1,10 @@
 % metrics.pl
 
 :- module(metrics, 
-            [ count_kids/2
+            [ everywhere/4 
+            , count_files/2
+            , count_folders/2
+            , count_kids/2
             , store_size/2
             , latest_modification_time/2
             ]).
@@ -13,6 +16,47 @@
 % TODO 
 % As my Prolog improves these should be implemented using generic 
 % traversals (c.f Stratego / Strafunski, ...).
+
+everywhere_list(_, [], A, A).
+
+everywhere_list(Goal, [X0|Xs], A0, A) :-
+    everywhere_aux(Goal, X0, A0, A1),
+    everywhere_list(Goal, Xs, A1, A).
+    
+everywhere_aux(Goal, Fo, A0, A) :- 
+    Fo = file_object(_,_,_,_),
+    call(Goal, Fo, A0, A).
+
+everywhere_aux(Goal, Fo, A0, A) :- 
+    Fo = folder_object(_,_,_,Kids),
+    call(Goal, Fo, A0, A1),
+    everywhere_list(Goal, Kids, A1, A).
+
+everywhere(Goal, Fo, Init, Answer) :- 
+    file_store_kids(Fo, Kids),
+    everywhere_list(Goal, Kids, Init, Answer).
+
+% count_files
+
+file_counter(file_object(_,_,_,_), A, A1) :- 
+    A1 is A + 1.
+
+file_counter(_, A, A).
+
+
+count_files(Fo,Count) :- 
+    everywhere(file_counter, Fo, 0, Count), !.
+
+% count_files
+
+folder_counter(folder_object(_,_,_,_), A, A1) :- 
+    A1 is A + 1.
+
+folder_counter(_, A, A).
+
+
+count_folders(Fo,Count) :- 
+    everywhere(folder_counter, Fo, 0, Count), !.
 
 % count_kids
 % counts both files and folders.
