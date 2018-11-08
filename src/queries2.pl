@@ -77,19 +77,29 @@ make_row(Store, Row) :-
     file_store_path(Store, Path),
     file_store_name(Store, Name),
     store_size(Store, Size),
+    format_file_size(Size, SizeName),
     latest_modification_time(Store, T),
     iso_8601_text(T, Datetime),
-    Row = row(Name, Path, Size, Datetime).
+    Row = row(Name, Path, SizeName, Size, Datetime).
 
 
 main :- 
     listing('directories', Store),
     sub_stores(Store, Subs),
     maplist(make_row, Subs, OutputRows),
-    Headers = row("Name", "Path", "Size", "Latest Modification Time"),
+    Headers = row("Name", "Path", "Size", "Size (Bytes)", "Latest Modification Time"),
     output_csv("..\\data\\projects.csv", Headers, OutputRows).
 
 temp02 :- 
     split_string("D:\\coding\\fsharp\\factx-fsharp", "\\", "", Xs),
     last(Xs,Last),
     writeln(Last).
+
+format_file_size2(Size, Text) :- 
+    KB is 1024,
+    MB is 1024 * KB,
+    GB is 1024 * MB,
+    (Size > GB -> format(string(Text), "~1fGB", [Size / GB])
+        ; (Size > MB -> format(string(Text), "~1fMB", [Size / MB])
+            ; (Size > KB -> format(string(Text), "~1fKB", [Size / KB])
+                ; format(string(Text), "~db", Size)))).  

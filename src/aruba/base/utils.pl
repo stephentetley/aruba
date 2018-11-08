@@ -4,6 +4,7 @@
             [ output_csv/3
             , iso_8601_stamp/2
             , iso_8601_text/2
+            , format_file_size/2
             ]).
 
 :- use_module(library(csv)).
@@ -22,5 +23,15 @@ iso_8601_stamp(Text, Stamp) :-
     parse_time(Text, iso_8601, Stamp).    
 
 iso_8601_text(Stamp, Text) :-
-    format_time(string(Text), "%G-%m-%dT%H:%M:%S", Stamp).   
+    format_time(string(Text), "%G-%m-%dT%H:%M:%S", Stamp).
+
+
+format_file_size(Size, Text) :- 
+    KB is 1024,
+    MB is 1024 * KB,
+    GB is 1024 * MB,
+    (Size > GB -> format(string(Text), "~1fGB", [Size / GB])
+        ; (Size > MB -> format(string(Text), "~1fMB", [Size / MB])
+            ; (Size > KB -> format(string(Text), "~1fKB", [Size / KB])
+                ; format(string(Text), "~db", Size)))).       
 
