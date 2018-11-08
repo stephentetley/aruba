@@ -1,6 +1,8 @@
 % queries.pl
 
+:- use_module(library(csv)).
 :- use_module(library(yall)).
+:- use_module(library(lists)).
 
 :- use_module(aruba/base/utils).
 :- use_module(aruba/file_store/structs).
@@ -59,15 +61,35 @@ report_store(Store) :-
     iso_8601_text(T,Datetime),
     format("'~w': size=~d, time=~w ~n", [Path,Size,Datetime]).
 
-demo06 :- 
-    listing('directories', Store),
-    sub_stores(Store, Subs),
-    maplist(report_store, Subs).
-
-    
+   
 temp01:- 
     iso_8601_text(1535712600.000000,Text), 
     format("~w", [Text]).
 
 
+demo06 :- 
+    listing('directories', Store),
+    sub_stores(Store, Subs),
+    maplist(report_store, Subs).
 
+ 
+make_row(Store, Row) :- 
+    file_store_path(Store, Path),
+    file_store_name(Store, Name),
+    store_size(Store, Size),
+    latest_modification_time(Store, T),
+    iso_8601_text(T, Datetime),
+    Row = row(Name, Path, Size, Datetime).
+
+
+main :- 
+    listing('directories', Store),
+    sub_stores(Store, Subs),
+    maplist(make_row, Subs, OutputRows),
+    Headers = row("Name", "Path", "Size", "Latest Modification Time"),
+    output_csv("..\\data\\projects.csv", Headers, OutputRows).
+
+temp02 :- 
+    split_string("D:\\coding\\fsharp\\factx-fsharp", "\\", "", Xs),
+    last(Xs,Last),
+    writeln(Last).
