@@ -5,16 +5,16 @@
 
 
 
-file_object('Chamber 001.JPG', properties("2018-06-29T11:05:00", '-a---')).
-file_object('Chamber 002.JPG', properties("2018-06-29T11:06:00", '-a---')).
+file_object('Chamber 001.JPG', "2018-06-29T11:05:00", '-a---', 1024).
+file_object('Chamber 002.JPG', "2018-06-29T11:06:00", '-a---', 1024).
 
-demo01(Props):- 
-    findall(X, file_object(_,X), Props).
+demo01(Ts):- 
+    findall(X, file_object(_,X,_,_), Ts).
 
 % Direct accessor
-demo02(Ts):- 
-    findall(T, (file_object(_,X), properties_modification_time(X,T)), Ts).
+% demo02(Ts):- 
+%     findall(T, (file_object(_,X), properties_modification_time(X,T)), Ts).
 
 % Field label accessor
-demo03(Ts):- 
-    findall(T, (file_object(_,X), properties_data(mode,X,T)), Ts).
+% demo03(Ts):- 
+%     findall(T, (file_object(_,X), properties_data(mode,X,T)), Ts).

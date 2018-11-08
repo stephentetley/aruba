@@ -2,6 +2,7 @@
 
 :- use_module(library(yall)).
 
+:- use_module(aruba/base/utils).
 :- use_module(aruba/file_store/structs).
 :- use_module(aruba/file_store/metrics).
 :- use_module(aruba/file_store/operations).
@@ -54,11 +55,19 @@ demo05(Xs) :-
 report_store(Store) :- 
     file_store_path(Store,Path),
     store_size(Store,Size),
-    format("'~w': size=~d ~n", [Path,Size]).
+    latest_modification_time(Store,T),
+    iso_8601_text(T,Datetime),
+    format("'~w': size=~d, time=~w ~n", [Path,Size,Datetime]).
 
 demo06 :- 
     listing('directories', Store),
     sub_stores(Store, Subs),
     maplist(report_store, Subs).
+
+    
+temp01:- 
+    iso_8601_text(1535712600.000000,Text), 
+    format("~w", [Text]).
+
 
 

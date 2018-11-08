@@ -14,10 +14,14 @@
             , folder_object_mode/2
             , folder_object_kids/2
             , file_store_path/2
-            , file_store_kids/2            
+            , file_store_kids/2
+            , file_object_modification_timestamp/2            
+            , folder_object_modification_timestamp/2
             ]).
 
 :- use_module(library(record)).
+
+:- use_module(aruba/base/utils).
 
 
 :- record file_object(name:text=none, modification_time:text=none, mode:text=none, size:integer=0).
@@ -25,3 +29,14 @@
 :- record folder_object(name:text=none, modification_time:text=none, mode:text=none, kids:list=[]).
 
 :- record file_store(path:text=none, kids:list=[]).
+
+
+% Additional accessors
+
+file_object_modification_timestamp(Fo,Stamp) :- 
+    file_object_modification_time(Fo,Text),
+    iso_8601_stamp(Text,Stamp).
+
+folder_object_modification_timestamp(Fo,Stamp) :- 
+    folder_object_modification_time(Fo,Text),
+    iso_8601_stamp(Text,Stamp).

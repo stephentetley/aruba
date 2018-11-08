@@ -3,8 +3,10 @@
 :- module(metrics, 
             [ count_kids/2
             , store_size/2
+            , latest_modification_time/2
             ]).
 
+:- use_module(aruba/base/utils).
 :- use_module(aruba/file_store/structs).
 
 
@@ -52,3 +54,28 @@ size_kids_aux(folder_object(_,_,_,Kids), N0, N) :-
 store_size(Store, N) :-
     file_store_kids(Store, Kids),
     size_kids_list(Kids, 0, N).
+
+% latest_modification_time
+
+latest(Stamp1, Stamp2, Latest) :-
+    Latest is max(Stamp1, Stamp2).
+
+latest_modification_list([X|Xs], T0, T) :-
+    latest_modification_aux(X,T0,T1),
+    latest_modification_list(Xs,T1,T).
+
+latest_modification_list([], T, T).
+
+
+latest_modification_aux(file_object(_, Stamp, _, _), T0, T) :-
+    iso_8601_stamp(Stamp, T1), 
+    latest(T0, T1, T).
+
+latest_modification_aux(folder_object(_, Stamp, _, Kids), T0, T) :- 
+    iso_8601_stamp(Stamp, T1),
+    latest(T0,T1,T2),
+    latest_modification_list(Kids, T2, T).
+
+latest_modification_time(Store, T) :-
+    file_store_kids(Store, Kids),
+    latest_modification_list(Kids, 0, T).
