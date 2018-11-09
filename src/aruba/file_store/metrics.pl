@@ -5,8 +5,7 @@
 */    
 
 :- module(metrics, 
-            [ everywhere/4 
-            , count_files/2
+            [ count_files/2
             , count_folders/2
             , count_kids/2
             , store_size/2
@@ -23,14 +22,14 @@
 
 % count_files
 
-file_counter(file_object(_,_,_,_), A, A1) :- 
+count_files_aux(file_object(_,_,_,_), A, A1) :- 
     A1 is A + 1.
 
-file_counter(_, A, A).
+count_files_aux(_, A, A).
 
 
 count_files(Fo,Count) :- 
-    everywhere(file_counter, Fo, 0, Count), !.
+    everywhere(count_files_aux, Fo, 0, Count), !.
 
 % count_files
 

@@ -12,6 +12,8 @@
 
 :- use_module(aruba/file_store/structs).
 
+:- meta_predicate
+    everywhere(3,+,+,-).
 
 % TODO 
 % Implement a suite of traversals (c.f Stratego, Strafunski, KURE, ...).

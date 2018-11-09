@@ -6,6 +6,7 @@
 
 :- use_module(aruba/base/utils).
 :- use_module(aruba/file_store/structs).
+:- use_module(aruba/file_store/traversals).
 :- use_module(aruba/file_store/metrics).
 :- use_module(aruba/file_store/operations).
 
@@ -81,14 +82,16 @@ make_row(Store, Row) :-
     format_file_size(Size, SizeName),
     latest_modification_time(Store, T),
     iso_8601_text(T, Datetime),
-    Row = row(Name, Path, SizeName, Size, Datetime).
+    count_files(Store, NFiles),
+    count_files(Store, NFolders),
+    Row = row(Name, Path, NFiles, NFolders, SizeName, Size, Datetime).
 
 
 main :- 
     listing('directories', Store),
     sub_stores(Store, Subs),
     maplist(make_row, Subs, OutputRows),
-    Headers = row("Name", "Path", "Size", "Size (Bytes)", "Latest Modification Time"),
+    Headers = row("Name", "Path", "File Count", "Folder Count", "Size", "Size (Bytes)", "Latest Modification Time"),
     output_csv("..\\data\\rtu.csv", Headers, OutputRows).
 
 temp02 :- 
