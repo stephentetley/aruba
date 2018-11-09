@@ -10,6 +10,7 @@
             , count_kids/2
             , store_size/2
             , latest_modification_time/2
+            , earliest_modification_time/2
             ]).
 
 :- use_module(aruba/base/utils).
@@ -69,15 +70,47 @@ store_size(Store, Size) :-
 latest(Stamp1, Stamp2, Latest) :-
     Latest is max(Stamp1, Stamp2).
 
-
-
 latest_modification_aux(file_object(_, Stamp, _, _), T0, T) :-
     iso_8601_stamp(Stamp, T1), 
     latest(T0, T1, T).
 
 latest_modification_aux(folder_object(_, Stamp, _, _), T0, T) :- 
     iso_8601_stamp(Stamp, T1),
-    latest(T0,T1,T).
+    latest(T0, T1, T).
 
 latest_modification_time(Store, Stamp) :-
     everywhere(latest_modification_aux, Store, 0, Stamp), !.
+
+
+
+% earliest_modification_time
+
+earliest(Stamp1, Stamp2, Earliest) :-
+    number(Stamp1),
+    Earliest is min(Stamp1, Stamp2), !.
+
+earliest(_, Stamp2, Earliest) :-
+    Earliest is Stamp2.
+
+
+
+earliest_modification_aux(file_object(_, Stamp, _, _), T0, T) :-
+    iso_8601_stamp(Stamp, T1), 
+    earliest(T0, T1, T).
+
+earliest_modification_aux(folder_object(_, Stamp, _, _), T0, T) :- 
+    iso_8601_stamp(Stamp, T1),
+    earliest(T0, T1, T).
+
+earliest_cast(Stamp0, Stamp) :-
+    number(Stamp0),
+    Stamp is Stamp0, !.
+
+earliest_cast(_, S) :- 
+    S is 0.
+
+
+earliest_modification_time(Store, Stamp) :-
+    everywhere(earliest_modification_aux, Store, 'zero', S0), 
+    earliest_cast(S0, Stamp), !.
+

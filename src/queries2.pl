@@ -80,19 +80,21 @@ make_row(Store, Row) :-
     file_store_name(Store, Name),
     store_size(Store, Size),
     format_file_size(Size, SizeName),
-    latest_modification_time(Store, T),
-    iso_8601_text(T, Datetime),
+    earliest_modification_time(Store, TEarly),
+    iso_8601_text(TEarly, SEarly),
+    latest_modification_time(Store, TLate),
+    iso_8601_text(TLate, SLate),
     count_kids(Store, NKids),
     count_files(Store, NFiles),
     count_folders(Store, NFolders),
-    Row = row(Name, Path, NKids, NFiles, NFolders, SizeName, Size, Datetime).
+    Row = row(Name, Path, NKids, NFiles, NFolders, SizeName, Size, SEarly, SLate).
 
 
 main :- 
     listing('directories', Store),
     sub_stores(Store, Subs),
     maplist(make_row, Subs, OutputRows),
-    Headers = row("Name", "Path", "Kids Count", "File Count", "Folder Count", "Size", "Size (Bytes)", "Latest Modification Time"),
+    Headers = row("Name", "Path", "Kids Count", "File Count", "Folder Count", "Size", "Size (Bytes)", "Earliest Modification Time", "Latest Modification Time"),
     output_csv("..\\data\\rtu.csv", Headers, OutputRows).
 
 temp02 :- 
@@ -109,4 +111,13 @@ temp03 :-
     count_folders(Store, XFolders), 
     format("Folders=~d~n", [XFolders]).
 
+
+temp04(Stamp) :- 
+    listing('directories', Store),
+    earliest_modification_time(Store, Stamp).
+
+
+temp04a(Stamp) :- 
+    listing('directories', Store),
+    latest_modification_time(Store, Stamp).
 
