@@ -86,11 +86,10 @@ latest_modification_time(Store, Stamp) :-
 % earliest_modification_time
 
 earliest(Stamp1, Stamp2, Earliest) :-
-    number(Stamp1),
-    Earliest is min(Stamp1, Stamp2), !.
-
-earliest(_, Stamp2, Earliest) :-
-    Earliest is Stamp2.
+    ( number(Stamp1) -> 
+        Earliest is min(Stamp1, Stamp2)
+    ; Earliest is Stamp2
+    ).
 
 
 
@@ -103,11 +102,10 @@ earliest_modification_aux(folder_object(_, Stamp, _, _), T0, T) :-
     earliest(T0, T1, T).
 
 earliest_cast(Stamp0, Stamp) :-
-    number(Stamp0),
-    Stamp is Stamp0, !.
-
-earliest_cast(_, S) :- 
-    S is 0.
+    ( number(Stamp0) ->
+        Stamp is Stamp0
+    ; Stamp is 0
+    ).
 
 
 earliest_modification_time(Store, Stamp) :-
