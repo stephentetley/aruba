@@ -72,7 +72,8 @@ demo06 :-
     sub_stores(Store, Subs),
     maplist(report_store, Subs).
 
- 
+% TODO report should include item count
+% empty size can be misleading... 
 make_row(Store, Row) :- 
     file_store_path(Store, Path),
     file_store_name(Store, Name),

@@ -1,4 +1,8 @@
-% metrics.pl
+/*
+    metrics.pl
+    Copyright (c) Stephen Tetley 2018
+    License: BSD 3 Clause
+*/    
 
 :- module(metrics, 
             [ everywhere/4 
@@ -11,30 +15,11 @@
 
 :- use_module(aruba/base/utils).
 :- use_module(aruba/file_store/structs).
-
+:- use_module(aruba/file_store/traversals).
 
 % TODO 
-% As my Prolog improves these should be implemented using generic 
-% traversals (c.f Stratego / Strafunski, ...).
-
-everywhere_list(_, [], A, A).
-
-everywhere_list(Goal, [X0|Xs], A0, A) :-
-    everywhere_aux(Goal, X0, A0, A1),
-    everywhere_list(Goal, Xs, A1, A).
-    
-everywhere_aux(Goal, Fo, A0, A) :- 
-    Fo = file_object(_,_,_,_),
-    call(Goal, Fo, A0, A).
-
-everywhere_aux(Goal, Fo, A0, A) :- 
-    Fo = folder_object(_,_,_,Kids),
-    call(Goal, Fo, A0, A1),
-    everywhere_list(Goal, Kids, A1, A).
-
-everywhere(Goal, Fo, Init, Answer) :- 
-    file_store_kids(Fo, Kids),
-    everywhere_list(Goal, Kids, Init, Answer).
+% As my Prolog improves the metrics should be implemented using generic 
+% traversals (c.f Stratego, Strafunski, KURE, ...).
 
 % count_files
 

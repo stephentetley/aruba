@@ -1,4 +1,8 @@
-% operations.pl
+/*
+    operations.pl
+    Copyright (c) Stephen Tetley 2018
+    License: BSD 3 Clause
+*/   
 
 :- module(operations, 
             [ sub_stores/2
