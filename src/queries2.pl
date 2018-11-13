@@ -10,7 +10,17 @@
 :- use_module(aruba/file_store/metrics).
 :- use_module(aruba/file_store/operations).
 
-:- use_module(factbase/directories).
+
+% Note using the module system means we cannot have discontiguous or
+% multifile predicates.
+% Instead use a renamed import.
+
+:- use_module(
+        factbase/directories, 
+        [listing/1 as dir_listing]
+        ).
+
+
 
 
 % Towards dynamic databases...
@@ -20,7 +30,7 @@
 % for the time being "bind" a file_store inside a listing/2 functor.
 
 demo01(Xs) :- 
-    listing('directories',Store),
+    dir_listing(Store),
     file_store_kids(Store,Xs).
 
 
@@ -33,26 +43,26 @@ folder_name(folder_object(Name,_,_,_),Name).
 
 
 demo02(Xs) :- 
-    listing('directories', Store),
+    dir_listing(Store),
     file_store_kids(Store, Kids),
     include(is_folder, Kids, Fs),
     maplist(folder_name, Fs, Xs).
 
 
 demo03(N) :- 
-    listing('directories', Store),
+    dir_listing(Store),
     count_kids(Store, N).
 
 
 
 demo04(N) :- 
-    listing('directories', Store),
+    dir_listing(Store),
     store_size(Store, N).
 
 %% towards sub_stores.
 
 demo05(Xs) :- 
-    listing('directories', Store),
+    dir_listing(Store),
     sub_stores(Store, Xs).
 
 report_store(Store) :- 
@@ -69,7 +79,7 @@ temp01:-
 
 
 demo06 :- 
-    listing('directories', Store),
+    dir_listing(Store),
     sub_stores(Store, Subs),
     maplist(report_store, Subs).
 
@@ -91,7 +101,7 @@ make_row(Store, Row) :-
 
 
 main :- 
-    listing('directories', Store),
+    dir_listing(Store),
     sub_stores(Store, Subs),
     maplist(make_row, Subs, OutputRows),
     Headers = row("Name", "Path", "Kids Count", "File Count", "Folder Count", "Size", "Size (Bytes)", "Earliest Modification Time", "Latest Modification Time"),
@@ -103,7 +113,7 @@ temp02 :-
     writeln(Last).
 
 temp03 :- 
-    listing('directories', Store),
+    dir_listing(Store),
     count_kids(Store, XKids), 
     format("Kids=~d~n", [XKids]), 
     count_files(Store, XFiles), 
@@ -113,11 +123,11 @@ temp03 :-
 
 
 temp04(Stamp) :- 
-    listing('directories', Store),
+    dir_listing(Store),
     earliest_modification_time(Store, Stamp).
 
 
 temp04a(Stamp) :- 
-    listing('directories', Store),
+    dir_listing(Store),
     latest_modification_time(Store, Stamp).
 

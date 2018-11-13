@@ -2,12 +2,11 @@
 
 % directories
 
-:- module(directories, [listing/2]).
+:- module(directories, [listing/1]).
 
-% listing(name, store).
+% listing(store).
 % 
-listing( 'directories',
-    file_store(
+listing( file_store(
         "D:\\coding\\fsharp\\factx-fsharp",
         [folder_object(
             "data",

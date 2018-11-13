@@ -1,6 +1,6 @@
 % files_dummy.pl
 
-
+:- use_module(aruba/file_store/operations).
 
 % See SWI Prolog Manual Section 4.36 for direct file system 
 % access predicates (not "file stores" / listings).
@@ -20,3 +20,19 @@ demo04(File) :-
 
 demo05(Directory) :- 
     file_directory_name("dir1/dir2/output.txt", Directory).
+
+% Need PCRE cheat sheet...
+
+
+
+
+test01(Ans) :- 
+    get_extension("dir1/dir2/goal.xml", Ans).
+
+
+get_basename(FileName, Ans) :- 
+    re_matchsub("(?<base>.*)(?:\\.)(?<ext>[^\\.]+)$", FileName, Dict, []),
+    get_dict('base',Dict,Ans).
+
+
+

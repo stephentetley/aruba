@@ -5,12 +5,14 @@
 */   
 
 :- module(structs, 
-            [ file_object_data/3
+            [ is_file_object/1
+            , file_object_data/3
             , make_file_object/3
             , file_object_name/2
             , file_object_modification_time/2
             , file_object_mode/2
             , file_object_size/2
+            , is_folder_object/1
             , folder_object_data/3
             , make_folder_object/3
             , folder_object_name/2
@@ -33,6 +35,13 @@
 :- record folder_object(name:text=none, modification_time:text=none, mode:text=none, kids:list=[]).
 
 :- record file_store(path:text=none, kids:list=[]).
+
+
+% file_object(file_object(_,_,_,_)).
+
+% is_file_object(file_object(_,_,_,_)).
+
+% is_folder_object(folder_object(_,_,_,_)).
 
 
 % Additional accessors
