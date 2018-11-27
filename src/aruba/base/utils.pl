@@ -1,5 +1,5 @@
 /*
-    uilts.pl
+    utils.pl
     Copyright (c) Stephen Tetley 2018
     License: BSD 3 Clause
 */    
