@@ -40,10 +40,17 @@
 
 add1(X,Y) :- Y is X + 1.
 
-demo01(Ans) :- seq_rewrite(add1, add1, 10,Ans).
+demo01(Ans) :- sequence(add1, add1, 10,Ans).
+
+% failcall(R1, Input, Ans) :-
+%     (call(R1,Input,Ans), 
+%      !
+%     ; throw(call_error())
+%     ).
+
 
 % choose_rewrite(R1, R2, Input, Ans) :-
-%     catch(call(R1,Input,Ans), 
+%     catch(failcall(R1,Input,Ans), 
 %           _, 
 %           call(R2,Input,Ans)).
 
@@ -52,7 +59,7 @@ if_even_add10(X,Y) :-
     (A1 == 0 -> Y is X + 10).
 
 
-demo02(Ans) :- choose_rewrite(if_even_add10, add1, 1, Ans).
+demo02(Ans) :- choose(if_even_add10, add1, 1, Ans).
 
 employee(person("stephen", "Yorkshire"), 10000000.0).
 
@@ -71,7 +78,7 @@ demo03(Ans) :- employee(person("stephen", "Yorkshire"), 10000000.0) =.. Ans.
 %     Ans =.. [Head|Kids1], !.
 
 
-demo04(Ans) :- all_rewrite(identity_rewrite, employee(person("stephen", "Yorkshire"), 10000000.0), Ans).
+demo04(Ans) :- all_rewrite(identity, employee(person("stephen", "Yorkshire"), 10000000.0), Ans).
 
 % Prolog lists are heterogenous (of course!)...
 demo05(Ans) :- 
