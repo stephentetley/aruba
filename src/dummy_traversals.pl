@@ -40,7 +40,7 @@
 
 add1(X,Y) :- Y is X + 1.
 
-demo01(Ans) :- sequence(add1, add1, 10,Ans).
+demo01(Ans) :- sequence_rewrite(add1, add1, 10, Ans).
 
 % failcall(R1, Input, Ans) :-
 %     (call(R1,Input,Ans), 
@@ -59,7 +59,7 @@ if_even_add10(X,Y) :-
     (A1 == 0 -> Y is X + 10).
 
 
-demo02(Ans) :- choose(if_even_add10, add1, 1, Ans).
+demo02(Ans) :- choose_rewrite(if_even_add10, add1, 1, Ans).
 
 employee(person("stephen", "Yorkshire"), 10000000.0).
 
@@ -105,5 +105,28 @@ demo07(Ans) :-
     X = node(leaf(1),node(leaf(2), leaf(3))),
     alltd_rewrite(add1, X, Ans).
 
+if_even_add10_three(X, _ ,Y) :- 
+    A1 is rem(X,2),
+    (A1 == 0 -> Y is X + 10).
 
-    
+% demo08 works (the functor mylist(..) is destructured):
+demo08(Ans) :- 
+    one_trafo(if_even_add10_three, mylist(1,3,4,5,7,9), 0, Ans).
+
+
+% demo08a - note we have added a special clause to destructure lists...
+demo08a(Ans) :- 
+    one_trafo(if_even_add10_three, [1,3,4,5,7,9], 0, Ans).
+
+
+demo09(Ans) :- 
+    any_rewrite(if_even_add10, [1,2,3,4,5,6,7,8,9], Ans).
+
+
+
+maximum(X, Y, Ans) :- 
+    Ans is max(X,Y).
+
+
+demo10(Ans) :- 
+    alltd_trafo(maximum, [1,2,3,4,5,6,7,8,9], 0, Ans).
