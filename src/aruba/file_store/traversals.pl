@@ -55,7 +55,8 @@ choose_zero(Goal1, Goal2, Object) :-
 % TODO 
 % Handle failure appropriately
 
-% Naming note - everywhere is an Accumulating traversal so it needs an indicative name.
+% everywhere considered deprecated - we should be moving to use base_traversals.
+
 
 everywhere_list([], _, A, A).
 
