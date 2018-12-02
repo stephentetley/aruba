@@ -24,10 +24,10 @@
 
 % count_files
 
-count_files_aux(file_object(_,_,_,_), A, A1) :- 
+count_files_aux(A, file_object(_,_,_,_), A1) :- 
     A1 is A + 1.
 
-count_files_aux(_, A, A).
+count_files_aux(A, _, A).
 
 
 count_files(Fo,Count) :- 
@@ -35,10 +35,10 @@ count_files(Fo,Count) :-
 
 % count_files
 
-count_folders_aux(folder_object(_,_,_,_), A, A1) :- 
+count_folders_aux(A, folder_object(_,_,_,_), A1) :- 
     A1 is A + 1.
 
-count_folders_aux(_, A, A).
+count_folders_aux(A, _, A).
 
 
 count_folders(Fo,Count) :- 
@@ -47,19 +47,20 @@ count_folders(Fo,Count) :-
 % count_kids
 % counts both files and folders.
 
-
-count_kids_aux(_, N0, N) :- 
-    N is N0 + 1.
+% It is not ideal passing an arity three predicate around and ignoring one argument
+% It means users must always remember which arument is the accumulator.
+count_kids_aux(Acc, _, N) :- 
+    N is Acc + 1.
 
 count_kids(Fo,Count) :- 
     everywhere(count_kids_aux, Fo, 0, Count), !.
 
 % store_size
 
-store_size_aux(file_object(_,_,_,Sz), N0, N) :- 
-    N is N0 + Sz.
+store_size_aux(Acc, file_object(_,_,_,Sz), N) :- 
+    N is Acc + Sz.
 
-store_size_aux(_, N, N).
+store_size_aux(A, _, A).
 
 
 store_size(Store, Size) :-
@@ -71,11 +72,11 @@ store_size(Store, Size) :-
 latest(Stamp1, Stamp2, Latest) :-
     Latest is max(Stamp1, Stamp2).
 
-latest_modification_aux(file_object(_, Stamp, _, _), T0, T) :-
+latest_modification_aux(T0, file_object(_, Stamp, _, _), T) :-
     iso_8601_stamp(Stamp, T1), 
     latest(T0, T1, T).
 
-latest_modification_aux(folder_object(_, Stamp, _, _), T0, T) :- 
+latest_modification_aux(T0, folder_object(_, Stamp, _, _), T) :- 
     iso_8601_stamp(Stamp, T1),
     latest(T0, T1, T).
 
@@ -94,11 +95,11 @@ earliest(Stamp1, Stamp2, Earliest) :-
 
 
 
-earliest_modification_aux(file_object(_, Stamp, _, _), T0, T) :-
+earliest_modification_aux(T0, file_object(_, Stamp, _, _), T) :-
     iso_8601_stamp(Stamp, T1), 
     earliest(T0, T1, T).
 
-earliest_modification_aux(folder_object(_, Stamp, _, _), T0, T) :- 
+earliest_modification_aux(T0, folder_object(_, Stamp, _, _), T) :- 
     iso_8601_stamp(Stamp, T1),
     earliest(T0, T1, T).
 

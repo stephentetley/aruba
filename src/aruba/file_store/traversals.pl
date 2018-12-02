@@ -57,24 +57,24 @@ choose_zero(Goal1, Goal2, Object) :-
 
 % Naming note - everywhere is an Accumulating traversal so it needs an indicative name.
 
-everywhere_list(_, [], A, A).
+everywhere_list([], _, A, A).
 
-everywhere_list(Goal, [X0|Xs], A0, A) :-
-    everywhere_aux(Goal, X0, A0, A1),
-    everywhere_list(Goal, Xs, A1, A).
+everywhere_list([X0|Xs], Goal, A0, A) :-
+    everywhere_aux(X0, Goal, A0, A1),
+    everywhere_list(Xs, Goal, A1, A).
     
-everywhere_aux(Goal, Fo, A0, A) :- 
+everywhere_aux(Fo, Goal, A0, A) :- 
     Fo = file_object(_,_,_,_),
-    call(Goal, Fo, A0, A).
+    call(Goal, A0, Fo, A).
 
-everywhere_aux(Goal, Fo, A0, A) :- 
+everywhere_aux(Fo, Goal, A0, A) :- 
     Fo = folder_object(_,_,_,Kids),
-    call(Goal, Fo, A0, A1),
-    everywhere_list(Goal, Kids, A1, A).
+    call(Goal, A0, Fo, A1),
+    everywhere_list(Kids, Goal, A1, A).
 
 everywhere(Goal, Store, Init, Answer) :- 
     file_store_kids(Store, Kids),
-    everywhere_list(Goal, Kids, Init, Answer).
+    everywhere_list(Kids, Goal, Init, Answer).
 
 
 % Naming note - onelayer is accumulating.

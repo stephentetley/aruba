@@ -48,7 +48,7 @@ demo02(Xs) :-
     include(is_folder, Kids, Fs),
     maplist(folder_name, Fs, Xs).
 
-
+% 189 for 'factx-fsharp' file store
 demo03(N) :- 
     dir_listing(Store),
     count_kids(Store, N).
