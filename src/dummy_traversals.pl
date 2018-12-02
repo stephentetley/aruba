@@ -11,7 +11,7 @@
 
 */
 
-:- use_module(aruba/base/traversals).
+:- use_module(aruba/base/base_traversals).
 :- use_module(library(record)).
 
 

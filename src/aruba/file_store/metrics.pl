@@ -13,7 +13,8 @@
             , earliest_modification_time/2
             ]).
 
-:- use_module(aruba/base/utils).
+:- use_module(aruba/base/base_utils).
+:- use_module(aruba/base/base_traversals).
 :- use_module(aruba/file_store/structs).
 :- use_module(aruba/file_store/traversals).
 
