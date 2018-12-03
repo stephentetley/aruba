@@ -123,6 +123,14 @@ demo09(Ans) :-
     any_rewrite(if_even_add10, [1,2,3,4,5,6,7,8,9], Ans).
 
 
+demo09a(Ans) :- 
+    alltd_rewrite(if_even_add10, [2,4,6,8,[10,12]], Ans).
+
+
+demo09b(Ans) :- 
+    allbu_rewrite(if_even_add10, [2,4,6,8,[10,12]], Ans).
+
+
 
 maximum(X, Y, Ans) :- 
     Ans is max(X,Y).
@@ -130,3 +138,20 @@ maximum(X, Y, Ans) :-
 
 demo10(Ans) :- 
     alltd_trafo(maximum, [1,2,3,4,5,6,7,8,9], 0, Ans).
+
+
+%% This is a bit prolemmatic without static typing, if we don't enforce the type of X
+%% demo11 appears to match "quickly" and doesn't descend.
+list_append(X, Xs, Ans) :-
+    not(is_list(X)),
+    Ans = [X|Xs].
+
+    
+
+
+%%
+demo11(Ans) :- 
+    alltd_trafo(list_append, [1,2,3,4,5,[6,7]], [], Ans).
+
+demo12(Ans) :- 
+    allbu_trafo(list_append, [1,2,3,4,5,[6,7]], [], Ans).

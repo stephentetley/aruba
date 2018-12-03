@@ -19,6 +19,7 @@
             , folder_object_modification_time/2
             , folder_object_mode/2
             , folder_object_kids/2
+            , is_file_store/1
             , file_store_path/2
             , file_store_kids/2
             , file_object_modification_timestamp/2            

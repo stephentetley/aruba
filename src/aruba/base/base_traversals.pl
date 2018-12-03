@@ -14,6 +14,7 @@
             , one_rewrite/3
             , one_trafo/4
             , any_rewrite/3
+            , any_trafo/4
             , all_rewrite/3
             , all_trafo/4
             , try_rewrite/3
@@ -31,6 +32,7 @@
     one_rewrite(2,+,-), 
     one_trafo(3,+,+,-),
     any_rewrite(2,+,-),
+    any_trafo(3,+,+,-),
     all_rewrite(2,+,-),
     all_trafo(3,+,+,-),
     try_rewrite(2,+,-),
@@ -165,6 +167,33 @@ any_rewrite(Goal1, Input, Ans) :-
 
 %%
 
+any_trafo_aux([], _, true, Acc, Acc).
+any_trafo_aux([], _, false, _, _) :- false.
+
+
+any_trafo_aux([X|Xs], Goal1, Status, Acc, Ans) :-
+    ( call(Goal1, X, Acc, A1),
+      any_trafo_aux(Xs, Goal1, true, A1, Ans)
+    ; any_trafo_aux(Xs, Goal1, Status, Acc, Ans)
+    ).
+
+
+any_trafo(Goal1, Input, Init, Ans) :-
+    is_list(Input),
+    write_ln("List case..."),
+    any_trafo_aux(Input, Goal1, false, Init, Ans), 
+    !.
+
+any_trafo(Goal1, Input, Init, Ans) :-
+    compound(Input),
+    write_ln("Compound case..."),
+    Input =.. [Head|Kids],
+    any_trafo_aux(Kids, Goal1, false, Init, Kids1), 
+    Ans =.. [Head|Kids1], 
+    !.
+
+%% 
+
 all_rewrite_aux([], _, []).
 
 all_rewrite_aux([X|Xs], Goal1, Ans) :-
@@ -193,12 +222,15 @@ all_trafo_aux([X|Xs], Goal1, Acc, Ans) :-
     call(Goal1, X, Acc, A1),
     all_trafo_aux(Xs, Goal1, A1, Ans).
 
+
+
 all_trafo(Goal1, Input, Acc, Ans) :-
     is_list(Input),
     all_trafo_aux(Input, Goal1, Acc, Ans).
 
 
 all_trafo(Goal1, Input, Acc, Ans) :-
+    compound(Input),
     Input =.. [_|Kids],
     all_trafo_aux(Kids, Goal1, Acc, Ans).
 

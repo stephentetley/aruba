@@ -5,6 +5,7 @@
 :- use_module(library(lists)).
 
 :- use_module(aruba/base/base_utils).
+:- use_module(aruba/base/base_traversals).
 :- use_module(aruba/file_store/structs).
 :- use_module(aruba/file_store/traversals).
 :- use_module(aruba/file_store/metrics).
@@ -17,20 +18,50 @@
 
 :- use_module(
         factbase/directories, 
-        [listing/1 as dir_listing]
+        [listing/1 as get_store]
         ).
 
+dummy1(Ys) :-
+    Xs = [2,3,4],
+    Ys = [1|Xs].
+
+
+dummy2(X,Xs) :-
+    get_store(Store),
+    Store =.. [X|Xs].
+
+append_name(Object, Acc, Xs) :-
+    is_file_object(Object),
+    file_object_name(Object, Name),
+    Xs = [Name|Acc].
+
+append_name(Object, Acc, Xs) :-
+    is_folder_object(Object),
+    folder_object_name(Object, Name),
+    Xs = [Name|Acc].
+
+append_name(Object, Acc, Acc) :-
+    is_file_store(Object).
 
 
 
-% Towards dynamic databases...
+%% PROBLEM - remember Store destructs to [path,kids] not [kids].
+demo00(Xs) :-
+    get_store(Store),
+    file_store_kids(Store,Kids),
+    is_list(Kids),    
+    any_trafo(append_name, Kids, [], Rev), 
+    reverse(Rev,Xs).
 
+demo00a(Xs) :-
+    get_store(Store),
+    file_store_kids(Store,Kids),  
+    alltd_trafo(append_name, Kids, [], Rev), 
+    reverse(Rev,Xs).
 
-% Maybe dynamic databases aren't the thing.
-% for the time being "bind" a file_store inside a listing/2 functor.
 
 demo01(Xs) :- 
-    dir_listing(Store),
+    get_store(Store),
     file_store_kids(Store,Xs).
 
 
@@ -43,26 +74,39 @@ folder_name(folder_object(Name,_,_,_),Name).
 
 
 demo02(Xs) :- 
-    dir_listing(Store),
+    get_store(Store),
     file_store_kids(Store, Kids),
     include(is_folder, Kids, Fs),
     maplist(folder_name, Fs, Xs).
 
 % 189 for 'factx-fsharp' file store
 demo03(N) :- 
-    dir_listing(Store),
+    get_store(Store),
     count_kids(Store, N).
 
 
 
 demo04(N) :- 
-    dir_listing(Store),
+    get_store(Store),
     store_size(Store, N).
+
+
+count_kids_aux( _, Acc, N) :- 
+    N is Acc + 1.
+
+
+count_kids_new(Fo, Count) :- 
+    alltd_trafo(count_kids_aux, Fo, 0, Count), !.
+
+test10(N1,N2) :- 
+    get_store(Store),
+    count_kids(Store, N1),
+    count_kids_new(Store,N2).
 
 %% towards sub_stores.
 
 demo05(Xs) :- 
-    dir_listing(Store),
+    get_store(Store),
     sub_stores(Store, Xs).
 
 report_store(Store) :- 
@@ -79,7 +123,7 @@ temp01:-
 
 
 demo06 :- 
-    dir_listing(Store),
+    get_store(Store),
     sub_stores(Store, Subs),
     maplist(report_store, Subs).
 
@@ -101,7 +145,7 @@ make_row(Store, Row) :-
 
 
 main :- 
-    dir_listing(Store),
+    get_store(Store),
     sub_stores(Store, Subs),
     maplist(make_row, Subs, OutputRows),
     Headers = row("Name", "Path", "Kids Count", "File Count", "Folder Count", "Size", "Size (Bytes)", "Earliest Modification Time", "Latest Modification Time"),
@@ -113,7 +157,7 @@ temp02 :-
     writeln(Last).
 
 temp03 :- 
-    dir_listing(Store),
+    get_store(Store),
     count_kids(Store, XKids), 
     format("Kids=~d~n", [XKids]), 
     count_files(Store, XFiles), 
@@ -123,11 +167,11 @@ temp03 :-
 
 
 temp04(Stamp) :- 
-    dir_listing(Store),
+    get_store(Store),
     earliest_modification_time(Store, Stamp).
 
 
 temp04a(Stamp) :- 
-    dir_listing(Store),
+    get_store(Store),
     latest_modification_time(Store, Stamp).
 
