@@ -128,9 +128,27 @@ demo11(Ans) :-
 demo11a(Ans) :- 
     alltd_trafo(sum, [1,2,3,4,5,6], 0, Ans).
 
-/* demo13a(Ans) :- 
-    all_trafo(flaky_append, [1,2,3,4,5,[6,7],8], [], Ans). */
+demo11b(Ans) :- 
+    alltd_trafo(sum, [1,2,3,[4,[5,6]]], 0, Ans).
 
+demo11c(Ans) :- 
+    alltd_trafo(sum, [1,2,3,number(4),[5,6]], 0, Ans).
+
+
+count(_, Acc, Ans) :-
+    Ans is Acc + 1.
 
 demo12(Ans) :- 
-    allbu_trafo(list_append, [1,2,3,4,5,[6,7]], [], Ans).
+    all_trafo(count, [1,2,3,4,5,6], 0, Ans).
+
+demo12a(Ans) :- 
+    alltd_trafo(count, [1,2,3,4,5,6], 0, Ans).
+
+demo12b(Ans) :- 
+    alltd_trafo(count, [1,2,3,[4,[5,6]]], 0, Ans).
+
+demo12c(Ans) :- 
+    alltd_trafo(count, [1,2,3,number(4),[5,6]], 0, Ans).
+
+/* demo12(Ans) :- 
+    allbu_trafo(list_append, [1,2,3,4,5,[6,7]], [], Ans). */

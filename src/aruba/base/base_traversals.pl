@@ -81,19 +81,6 @@ sequence_trafo(Goal1, Goal2, Input, Acc, Ans) :-
     call(Goal1, Input, Acc, A1),
     call(Goal2, Input, A1, Ans).
 
-
-% Call Goal1 on input, if it fails (false) throw an error.
-failcall_rewrite(Goal1, Input, Ans) :-
-    ( call(Goal1, Input, Ans), !
-    ; throw(call_error())
-    ).
-
-% Call Goal1 on input and accumulator, if it fails (false) throw and error.
-failcall_trafo(Goal1, Input, Acc, Ans) :-
-    ( call(Goal1, Input, Acc, Ans), !
-    ; throw(call_error())
-    ).
-
 % Exceptions will not be caught - wrap goals with attempt_rewrite 
 % if exceptions are possible.
 choose_rewrite(Goal1, Goal2, Input, Ans) :-
@@ -229,6 +216,10 @@ all_rewrite(Goal1, Input, Ans) :-
     Ans =.. [Head|Kids1], 
     !.
 
+all_rewrite(Goal1, Input, Ans) :-
+    atomic(Input),
+    call(Goal1, Input, Ans), 
+    !.
 
 % Terminology trafo indicates a fold-like traversal.
 
@@ -251,6 +242,7 @@ all_trafo(Goal1, Input, Acc, Ans) :-
     all_trafo_aux(Kids, Goal1, Acc, Ans), !.
 
 all_trafo(Goal1, Input, Acc, Ans) :-
+    atomic(Input),
     call(Goal1, Input, Acc, Ans).
 
 
@@ -265,11 +257,31 @@ alltd_rewrite(Goal1, Input, Ans) :-
     sequence_rewrite(attempt_rewrite(Goal1), all_rewrite(alltd_rewrite(Goal1)), Input, Ans), 
     !.
 
+% alltd_trafo
+
+alltd_trafo_aux([], _, Acc, Acc).
+
+alltd_trafo_aux([X|Xs], Goal1, Acc, Ans) :-
+    alltd_trafo(Goal1, X, Acc, A1),
+    alltd_trafo_aux(Xs, Goal1, A1, Ans).
+
+
 alltd_trafo(Goal1, Input, Acc, Ans) :-
-    sequence_trafo(attempt_trafo(Goal1), all_trafo(alltd_trafo(Goal1)), Input, Acc, Ans), 
+    is_list(Input),
+    alltd_trafo_aux(Input, Goal1, Acc, Ans), 
     !.
 
+alltd_trafo(Goal1, Input, Acc, Ans) :-
+    compound(Input),
+    Input =.. [_|Kids],
+    alltd_trafo_aux(Kids, Goal1, Acc, Ans), 
+    !.
 
+alltd_trafo(Goal1, Input, Acc, Ans) :-
+    atomic(Input),
+    call(Goal1, Input, Acc, Ans).
+
+% allbu_rewrite
 allbu_rewrite(Goal1, Input, Ans) :-
     sequence_rewrite(all_rewrite(allbu_rewrite(Goal1)), attempt_rewrite(Goal1), Input, Ans), 
     !.
