@@ -28,31 +28,12 @@
 :- record person(name:string, address:string).
 
 
-% choose(r1,r1)
-
-
-
-% fail_rewrite(_) :- false.
-
-% seq_rewrite(R1, R2, Input, Ans) :-
-%     call(R1, Input, A1),
-%     call(R2, A1, Ans).
-
 add1(X,Y) :- Y is X + 1.
+sum(X,Y,Z) :- Z is X + Y.
+
 
 demo01(Ans) :- sequence_rewrite(add1, add1, 10, Ans).
 
-% failcall(R1, Input, Ans) :-
-%     (call(R1,Input,Ans), 
-%      !
-%     ; throw(call_error())
-%     ).
-
-
-% choose_rewrite(R1, R2, Input, Ans) :-
-%     catch(failcall(R1,Input,Ans), 
-%           _, 
-%           call(R2,Input,Ans)).
 
 if_even_add10(X,Y) :- 
     A1 is rem(X,2),
@@ -64,18 +45,6 @@ demo02(Ans) :- choose_rewrite(if_even_add10, add1, 1, Ans).
 employee(person("stephen", "Yorkshire"), 10000000.0).
 
 demo03(Ans) :- employee(person("stephen", "Yorkshire"), 10000000.0) =.. Ans.
-
-% all_rewrite_aux(_,[],[]).
-% all_rewrite_aux(R1, [X|Xs], Ans) :-
-%     call(R1, X, A1),
-%     all_rewrite_aux(R1, Xs, A2),
-%     Ans = [A1|A2].
-
-
-% all_rewrite(R1,Input,Ans) :-
-%     Input =.. [Head|Kids],
-%     all_rewrite_aux(R1, Kids, Kids1), 
-%     Ans =.. [Head|Kids1], !.
 
 
 demo04(Ans) :- all_rewrite(identity, employee(person("stephen", "Yorkshire"), 10000000.0), Ans).
@@ -140,18 +109,28 @@ demo10(Ans) :-
     alltd_trafo(maximum, [1,2,3,4,5,6,7,8,9], 0, Ans).
 
 
-%% This is a bit prolemmatic without static typing, if we don't enforce the type of X
-%% demo11 appears to match "quickly" and doesn't descend.
-list_append(X, Xs, Ans) :-
-    not(is_list(X)),
-    Ans = [X|Xs].
 
-    
+list_append(X, Xs, Ans) :-
+    ( \+ is_list(X) 
+    -> Ans = [X|Xs]
+    ; Ans = Xs
+    ).
+
+
+flaky_append(X,Xs,Ans) :- 
+    Ans  = [X|Xs].
 
 
 %%
 demo11(Ans) :- 
-    alltd_trafo(list_append, [1,2,3,4,5,[6,7]], [], Ans).
+    all_trafo(sum, [1,2,3,4,5,6], 0, Ans).
+
+demo11a(Ans) :- 
+    alltd_trafo(sum, [1,2,3,4,5,6], 0, Ans).
+
+/* demo13a(Ans) :- 
+    all_trafo(flaky_append, [1,2,3,4,5,[6,7],8], [], Ans). */
+
 
 demo12(Ans) :- 
     allbu_trafo(list_append, [1,2,3,4,5,[6,7]], [], Ans).

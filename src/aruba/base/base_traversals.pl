@@ -7,6 +7,8 @@
 :- module(base_traversals, 
             [ identity/2
             , failure/1
+            , attempt_rewrite/3
+            , attempt_trafo/4
             , sequence_rewrite/4
             , sequence_trafo/5
             , choose_rewrite/4
@@ -18,6 +20,7 @@
             , all_rewrite/3
             , all_trafo/4
             , try_rewrite/3
+            , try_trafo/4
             , alltd_rewrite/3
             , alltd_trafo/4
             , allbu_rewrite/3
@@ -25,6 +28,8 @@
             ]).
 
 :- meta_predicate
+    attempt_rewrite(2,+,-),
+    attempt_trafo(3,+,+,-),
     sequence_rewrite(2,+,-),
     sequence_trafo(3,+,+,-),
     choose_rewrite(2,+,-), 
@@ -36,6 +41,7 @@
     all_rewrite(2,+,-),
     all_trafo(3,+,+,-),
     try_rewrite(2,+,-),
+    try_trafo(3,+,+,-),
     alltd_rewrite(2,+,-),
     alltd_trafo(3,+,+,-),
     allbu_rewrite(2,+,-),
@@ -55,6 +61,15 @@ identity(Ans, Ans).
 
 failure(_) :- false.
 
+attempt_rewrite(Goal1, Input, Ans) :- 
+    catch(call(Goal1, Input, Ans), 
+          _, 
+          false).
+
+attempt_trafo(Goal1, Input, Acc, Ans) :- 
+    catch(call(Goal1, Input, Acc, Ans), 
+        _, 
+        false).
 
 sequence_rewrite(Goal1, Goal2, Input, Ans) :-
     call(Goal1, Input, A1),
@@ -67,7 +82,7 @@ sequence_trafo(Goal1, Goal2, Input, Acc, Ans) :-
     call(Goal2, Input, A1, Ans).
 
 
-% Call Goal1 on input, if it fails (false) throw and error.
+% Call Goal1 on input, if it fails (false) throw an error.
 failcall_rewrite(Goal1, Input, Ans) :-
     ( call(Goal1, Input, Ans), !
     ; throw(call_error())
@@ -79,16 +94,17 @@ failcall_trafo(Goal1, Input, Acc, Ans) :-
     ; throw(call_error())
     ).
 
+% Exceptions will not be caught - wrap goals with attempt_rewrite 
+% if exceptions are possible.
 choose_rewrite(Goal1, Goal2, Input, Ans) :-
-    catch(failcall_rewrite(Goal1,Input,Ans), 
-          _, 
-          call(Goal2,Input,Ans)).
-
+    ( call(Goal1, Input, Ans) 
+    ; call(Goal2, Input, Ans)
+    ).
 
 choose_trafo(Goal1, Goal2, Input, Acc, Ans) :-
-    catch(failcall_trafo(Goal1, Input, Acc, Ans), 
-            _, 
-            call(Goal2, Input, Acc, Ans)).
+    ( call(Goal1, Input, Acc, Ans)
+    ; call(Goal2, Input, Acc, Ans)
+    ).
 
 % Failure if no success
 
@@ -226,33 +242,39 @@ all_trafo_aux([X|Xs], Goal1, Acc, Ans) :-
 
 all_trafo(Goal1, Input, Acc, Ans) :-
     is_list(Input),
-    all_trafo_aux(Input, Goal1, Acc, Ans).
+    all_trafo_aux(Input, Goal1, Acc, Ans), !.
 
 
 all_trafo(Goal1, Input, Acc, Ans) :-
     compound(Input),
     Input =.. [_|Kids],
-    all_trafo_aux(Kids, Goal1, Acc, Ans).
+    all_trafo_aux(Kids, Goal1, Acc, Ans), !.
+
+all_trafo(Goal1, Input, Acc, Ans) :-
+    call(Goal1, Input, Acc, Ans).
 
 
 try_rewrite(Goal1, Input, Ans) :-
-    choose_rewrite(Goal1, identity, Input, Ans).
+    choose_rewrite(attempt_rewrite(Goal1), identity, Input, Ans), !.
 
+
+try_trafo(Goal1, Input, Acc, Ans) :-
+    choose_rewrite(attempt_rewrite(Goal1), Acc, Input, Ans), !.
 
 alltd_rewrite(Goal1, Input, Ans) :-
-    choose_rewrite(Goal1, all_rewrite(alltd_rewrite(Goal1)), Input, Ans),
+    sequence_rewrite(attempt_rewrite(Goal1), all_rewrite(alltd_rewrite(Goal1)), Input, Ans), 
     !.
 
 alltd_trafo(Goal1, Input, Acc, Ans) :-
-    choose_trafo(Goal1, all_trafo(alltd_trafo(Goal1)), Input, Acc, Ans), 
+    sequence_trafo(attempt_trafo(Goal1), all_trafo(alltd_trafo(Goal1)), Input, Acc, Ans), 
     !.
 
 
 allbu_rewrite(Goal1, Input, Ans) :-
-    choose_rewrite(all_rewrite(allbu_rewrite(Goal1)), Goal1, Input, Ans), 
+    sequence_rewrite(all_rewrite(allbu_rewrite(Goal1)), attempt_rewrite(Goal1), Input, Ans), 
     !.
 
 allbu_trafo(Goal1, Input, Acc, Ans) :-
-    choose_trafo(all_trafo(allbu_trafo(Goal1)), Goal1, Input, Acc, Ans), 
+    sequence_trafo(all_trafo(allbu_trafo(Goal1)), attempt_trafo(Goal1), Input, Acc, Ans), 
     !.
 

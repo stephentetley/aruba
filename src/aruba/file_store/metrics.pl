@@ -48,12 +48,17 @@ count_folders(Fo,Count) :-
 % counts both files and folders.
 
 % It is not ideal passing an arity three predicate around and ignoring one argument
-% It means users must always remember which arument is the accumulator.
+% It means users must always remember which argument is the accumulator.
 count_kids_aux(Acc, _, N) :- 
     N is Acc + 1.
 
-count_kids(Fo,Count) :- 
+count_kids_old(Fo,Count) :- 
     everywhere(count_kids_aux, Fo, 0, Count), !.
+
+count_kids(Fo, Count) :- 
+    alltd_trafo(attempt_trafo(count_kids_aux), Fo, 0, Count), !.
+
+
 
 % store_size
 
