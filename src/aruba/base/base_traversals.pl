@@ -273,8 +273,9 @@ alltd_trafo(Goal1, Input, Acc, Ans) :-
 
 alltd_trafo(Goal1, Input, Acc, Ans) :-
     compound(Input),
+    call(Goal1, Input, Acc, A1),
     Input =.. [_|Kids],
-    alltd_trafo_aux(Kids, Goal1, Acc, Ans), 
+    alltd_trafo_aux(Kids, Goal1, A1, Ans), 
     !.
 
 alltd_trafo(Goal1, Input, Acc, Ans) :-

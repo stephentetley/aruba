@@ -150,5 +150,13 @@ demo12b(Ans) :-
 demo12c(Ans) :- 
     alltd_trafo(count, [1,2,3,number(4),[5,6]], 0, Ans).
 
-/* demo12(Ans) :- 
-    allbu_trafo(list_append, [1,2,3,4,5,[6,7]], [], Ans). */
+demo12d(Ans) :- 
+    alltd_trafo(count, list(zero, [1,2,3,number(4),[5]]), 0, Ans).
+
+sum_if_number(number(X), Acc, Ans) :- 
+    Ans is X + Acc.
+
+sum_if_number(_, Acc, Acc).
+
+demo13(Ans) :- 
+    alltd_trafo(sum_if_number, [1,2,3, number(4),[5, number(6)]], 0, Ans).
