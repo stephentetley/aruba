@@ -119,6 +119,11 @@ one_rewrite(Goal1, Input, Ans) :-
     !.
 
 
+one_rewrite(Goal1, Input, Ans) :-
+    atomic(Input),
+    call(Goal1, Input, Ans), 
+    !.
+
 %% 
 one_trafo_aux([], _, _, _) :- false.
 
@@ -139,6 +144,10 @@ one_trafo(Goal1, Input, Acc, Ans) :-
     one_trafo_aux(Kids, Goal1, Acc, Ans), 
     !.
 
+one_trafo(Goal1, Input, Acc, Ans) :-
+    atomic(Input),
+    call(Goal1, Input, Acc, Ans), 
+    !.
 
 %% 
 
@@ -168,6 +177,11 @@ any_rewrite(Goal1, Input, Ans) :-
     Ans =.. [Head|Kids1], 
     !.
 
+any_rewrite(Goal1, Input, Ans) :-
+    atomic(Input),
+    call(Goal1, Input, Ans), 
+    !.
+
 %%
 
 any_trafo_aux([], _, true, Acc, Acc).
@@ -189,7 +203,6 @@ any_trafo(Goal1, Input, Init, Ans) :-
 
 any_trafo(Goal1, Input, Init, Ans) :-
     compound(Input),
-    write_ln("Compound case..."),
     Input =.. [Head|Kids],
     any_trafo_aux(Kids, Goal1, false, Init, Kids1), 
     Ans =.. [Head|Kids1], 
@@ -221,7 +234,7 @@ all_rewrite(Goal1, Input, Ans) :-
     call(Goal1, Input, Ans), 
     !.
 
-% Terminology trafo indicates a fold-like traversal.
+% Terminology - trafo indicates a fold-like traversal.
 
 all_trafo_aux([], _, Acc, Acc).
 
@@ -253,9 +266,37 @@ try_rewrite(Goal1, Input, Ans) :-
 try_trafo(Goal1, Input, Acc, Ans) :-
     choose_rewrite(attempt_rewrite(Goal1), Acc, Input, Ans), !.
 
-alltd_rewrite(Goal1, Input, Ans) :-
+
+% alltd_rewrite
+/* alltd_rewrite(Goal1, Input, Ans) :-
     sequence_rewrite(attempt_rewrite(Goal1), all_rewrite(alltd_rewrite(Goal1)), Input, Ans), 
+    !. */
+
+alltd_rewrite_aux([], _, Acc, Ans) :- 
+    reverse(Acc, Ans).
+
+
+alltd_rewrite_aux([X|Xs], Goal1, Acc, Ans) :-
+    alltd_rewrite(Goal1, X, A1),
+    alltd_rewrite_aux(Xs, Goal1, [A1|Acc], Ans).
+
+
+alltd_rewrite(Goal1, Input, Ans) :-
+    is_list(Input),
+    alltd_rewrite_aux(Input, Goal1, [], Ans), 
     !.
+
+alltd_rewrite(Goal1, Input, Ans) :-
+    compound(Input),
+    Input =.. [Head|Kids],
+    alltd_rewrite_aux(Kids, Goal1, [], Kids1), 
+    Ans =.. [Head|Kids1],
+    !.
+
+alltd_rewrite(Goal1, Input, Acc, Ans) :-
+    atomic(Input),
+    call(Goal1, Input, Acc, Ans).
+
 
 % alltd_trafo
 
@@ -283,11 +324,61 @@ alltd_trafo(Goal1, Input, Acc, Ans) :-
     call(Goal1, Input, Acc, Ans).
 
 % allbu_rewrite
-allbu_rewrite(Goal1, Input, Ans) :-
+/* allbu_rewrite(Goal1, Input, Ans) :-
     sequence_rewrite(all_rewrite(allbu_rewrite(Goal1)), attempt_rewrite(Goal1), Input, Ans), 
+    !. */
+
+
+allbu_rewrite_aux([], _, Acc, Ans) :- 
+    reverse(Acc, Ans).
+
+
+allbu_rewrite_aux([X|Xs], Goal1, Acc, Ans) :-
+    allbu_rewrite_aux(Xs, Goal1, Acc, Acc1),
+    allbu_rewrite(Goal1, X, A1),
+    Ans = [A1|Acc1].
+
+
+allbu_rewrite(Goal1, Input, Ans) :-
+    is_list(Input),
+    allbu_rewrite_aux(Input, Goal1, [], Ans), 
+    !.
+
+allbu_rewrite(Goal1, Input, Ans) :-
+    compound(Input),
+    Input =.. [Head|Kids],
+    allbu_rewrite_aux(Kids, Goal1, [], Kids1), 
+    Ans =.. [Head|Kids1],
+    !.
+
+allbu_rewrite(Goal1, Input, Acc, Ans) :-
+    atomic(Input),
+    call(Goal1, Input, Acc, Ans).
+
+% allbu_trafo
+/* allbu_trafo(Goal1, Input, Acc, Ans) :-
+    sequence_trafo(all_trafo(allbu_trafo(Goal1)), Goal1, Input, Acc, Ans), 
+    !. */
+
+allbu_trafo_aux([], _, Acc, Acc).
+
+allbu_trafo_aux([X|Xs], Goal1, Acc, Ans) :-
+    allbu_trafo_aux(Xs, Goal1, Acc, A1),
+    allbu_trafo(Goal1, X, A1, Ans).
+
+allbu_trafo(Goal1, Input, Acc, Ans) :-
+    is_list(Input),
+    allbu_trafo_aux(Input, Goal1, Acc, Ans), 
     !.
 
 allbu_trafo(Goal1, Input, Acc, Ans) :-
-    sequence_trafo(all_trafo(allbu_trafo(Goal1)), attempt_trafo(Goal1), Input, Acc, Ans), 
+    compound(Input),
+    Input =.. [_|Kids],
+    allbu_trafo_aux(Kids, Goal1, Acc, A1), 
+    call(Goal1, Input, A1, Ans),
     !.
+
+allbu_trafo(Goal1, Input, Acc, Ans) :-
+    atomic(Input),
+    call(Goal1, Input, Acc, Ans).
 

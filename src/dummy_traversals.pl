@@ -160,3 +160,7 @@ sum_if_number(_, Acc, Acc).
 
 demo13(Ans) :- 
     alltd_trafo(sum_if_number, [1,2,3, number(4),[5, number(6)]], 0, Ans).
+
+
+demo13a(Ans) :- 
+    allbu_trafo(sum_if_number, [1,2,3, number(4),[5, number(6)]], 0, Ans).
