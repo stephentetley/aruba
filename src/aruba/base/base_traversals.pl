@@ -52,7 +52,7 @@
 % are the same
 
 % In Prolog we can (should?) use arity to distinguish between 
-% trafos an rewrites.
+% trafos and rewrites.
 % (But this has been error prone so far...)
 
 
@@ -382,3 +382,4 @@ allbu_trafo(Goal1, Input, Acc, Ans) :-
     atomic(Input),
     call(Goal1, Input, Acc, Ans).
 
+%% 
