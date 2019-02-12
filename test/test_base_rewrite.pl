@@ -4,13 +4,13 @@
     License: BSD 3 Clause
 */ 
 
+user:file_search_path(aruba, '../src/aruba').
 
-:- use_module(aruba/base/base_rewrite).
+:- use_module(aruba(base/base_rewrite)).
 
 
 
 add1(X,Y) :- Y is X + 1.
-sum(X,Y,Z) :- Z is X + Y.
 
 
 demo01(Ans) :- id_rewrite(none, 10, Ans).
@@ -25,6 +25,5 @@ demo03a(X) :- apply_rewrite(contextfree_rewrite(add1),"Elephant", 5, X).
 
 
 demo04(X) :- const_rewrite(1000, "Elephant", 4, X).
-
 demo04a(X) :- apply_rewrite(const_rewrite(101), "Elephant", 4, X).
 

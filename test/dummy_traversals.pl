@@ -1,6 +1,6 @@
 /*
     dummy_traversals.pl
-    Copyright (c) Stephen Tetley 2018
+    Copyright (c) Stephen Tetley 2018,2019
     License: BSD 3 Clause
 */ 
 
@@ -10,9 +10,11 @@
     
 
 */
+user:file_search_path(aruba, '../src/aruba').
 
-:- use_module(aruba/base/base_traversals).
 :- use_module(library(record)).
+:- use_module(aruba(base/base_traversals)).
+
 
 
 :- record company(departments:list=[]).

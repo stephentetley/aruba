@@ -1,10 +1,12 @@
 % queries1.pl
 
+user:file_search_path(aruba, '../src/aruba').
+
 :- use_module(library(yall)).
 
-:- use_module(aruba/base/base_utils).
-:- use_module(aruba/file_store/structs).
-:- use_module(aruba/file_store/metrics).
+:- use_module(aruba(base/base_utils)).
+:- use_module(aruba(file_store/structs)).
+:- use_module(aruba(file_store/metrics)).
 
 
 file_sys(

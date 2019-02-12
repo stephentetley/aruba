@@ -1,15 +1,18 @@
 % queries.pl
 
+user:file_search_path(aruba, '../src/aruba').
+user:file_search_path(factbase, '../src/factbase').
+
 :- use_module(library(csv)).
 :- use_module(library(yall)).
 :- use_module(library(lists)).
 
-:- use_module(aruba/base/base_utils).
-:- use_module(aruba/base/base_traversals).
-:- use_module(aruba/file_store/structs).
-:- use_module(aruba/file_store/traversals).
-:- use_module(aruba/file_store/metrics).
-:- use_module(aruba/file_store/operations).
+:- use_module(aruba(base/base_utils)).
+:- use_module(aruba(base/base_traversals)).
+:- use_module(aruba(file_store/structs)).
+:- use_module(aruba(file_store/traversals)).
+:- use_module(aruba(file_store/metrics)).
+:- use_module(aruba(file_store/operations)).
 
 
 % Note using the module system means we cannot have discontiguous or
@@ -17,7 +20,7 @@
 % Instead use a renamed import.
 
 :- use_module(
-        factbase/directories, 
+        factbase(directories), 
         [listing/1 as get_store]
         ).
 

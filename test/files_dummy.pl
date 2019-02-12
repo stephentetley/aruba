@@ -1,15 +1,17 @@
 % files_dummy.pl
 
-:- use_module(aruba/file_store/operations).
+user:file_search_path(aruba, '../src/aruba').
+
+:- use_module(aruba(file_store/operations)).
 
 % See SWI Prolog Manual Section 4.36 for direct file system 
 % access predicates (not "file stores" / listings).
 % e.g.
 demo01 :- 
-    exists_file("factbase/directories.pl").
+    exists_file("../src/factbase/directories.pl").
 
 demo02 :- 
-    exists_file("factbase/DOES_NOT_EXIST.pl").
+    exists_file("../src/factbase/DOES_NOT_EXIST.pl").
 
 % Note 
 demo03(Ext) :- 

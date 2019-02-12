@@ -1,7 +1,8 @@
 % record_test1.pl
 
+user:file_search_path(aruba, '../src/aruba').
 
-:- use_module(aruba/file_store/structs).
+:- use_module(aruba(file_store/structs)).
 
 
 
