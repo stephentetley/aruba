@@ -27,3 +27,8 @@ demo03a(X) :- apply_rewrite(contextfree_rewrite(add1),"Elephant", 5, X).
 demo04(X) :- const_rewrite(1000, "Elephant", 4, X).
 demo04a(X) :- apply_rewrite(const_rewrite(101), "Elephant", 4, X).
 
+demo05(X) :- 
+    sequence_rewrite(add1_ctxfree, add1_ctxfree, "Elephant", 10, X).
+
+demo05a(X) :- 
+    sequence_rewrite(add1_ctxfree, add1_ctxfree, "Elephant", "String", X).

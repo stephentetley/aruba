@@ -5,13 +5,19 @@
 */    
 
 :- module(base_transform, 
-            [ success_transform/3
+            [ fail_transform/3
+            , success_transform/3
             , context_transform/4
             , lift_context_transform/6
+            , sequence_trafo/6
             ]).
 
-:- meta_predicate lift_context_transform(2,4,+,+,-).
+:- meta_predicate 
+    lift_context_transform(2,4,+,+,-),
+    sequence_trafo(4,4,+,+,+,-).
 
+% Always fails.
+fail_transform(_, _, _) :- false.
 
 success_transform(_, _ ,_) :- true.
 
@@ -23,3 +29,7 @@ lift_context_transform(Update, Goal1, Ctx, Input, Acc, Ans) :-
         _,
         false).
 
+
+sequence_trafo(Goal1, Goal2, Ctx, Input, Acc, Ans) :-
+    call(Goal1, Ctx, Input, Acc, A1),
+    call(Goal2, Ctx, Input, A1, Ans).
