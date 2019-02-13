@@ -20,15 +20,26 @@ add1_ctxfree(_, X, Y) :- Y is X + 1.
 demo02(Ans) :- apply_rewrite(add1_ctxfree, none, 10, Ans).
 demo02a(Ans) :- apply_rewrite(add1_ctxfree, none, [10,11,12], Ans).
 
-demo03(X) :- contextfree_rewrite(add1,"Elephant", 5, X).
-demo03a(X) :- apply_rewrite(contextfree_rewrite(add1),"Elephant", 5, X).
+demo03(X) :- contextfree_rewrite(add1,"CtxElephant", 5, X).
+demo03a(X) :- apply_rewrite(contextfree_rewrite(add1),"CtxElephant", 5, X).
 
 
-demo04(X) :- const_rewrite(1000, "Elephant", 4, X).
-demo04a(X) :- apply_rewrite(const_rewrite(101), "Elephant", 4, X).
+demo04(X) :- const_rewrite(1000, "CtxElephant", 4, X).
+demo04a(X) :- apply_rewrite(const_rewrite(101), "CtxElephant", 4, X).
 
 demo05(X) :- 
-    sequence_rewrite(add1_ctxfree, add1_ctxfree, "Elephant", 10, X).
+    sequence_rewrite(add1_ctxfree, add1_ctxfree, "CtxElephant", 10, X).
 
 demo05a(X) :- 
-    sequence_rewrite(add1_ctxfree, add1_ctxfree, "Elephant", "String", X).
+    sequence_rewrite(add1_ctxfree, add1_ctxfree, "CtxElephant", "String", X).
+
+demo05b(X) :- 
+    sequence_rewrite(fail_rewrite, add1_ctxfree, "CtxElephant", 10, X).
+
+%% 11
+demo06(X) :- 
+    choose_rewrite(fail_rewrite, add1_ctxfree, "CtxElephant", 10, X).
+
+%% false.
+demo06a(X) :- 
+    choose_rewrite(fail_rewrite, add1_ctxfree, "CtxElephant", "String", X).
