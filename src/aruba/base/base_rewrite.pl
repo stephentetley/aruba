@@ -175,13 +175,14 @@ any_rewrite_aux([X|Xs], Goal1, Ctx, Acc, Status, Ans) :-
     
 all_rewrite(Goal1, Ctx, Input, Ans) :-
     is_list(Input),
-    all_rewrite_aux(Input, Goal1, Ctx, Ans), 
+    all_rewrite_aux(Input, Goal1, Ctx, [], Ans), 
     !.
 
+%% "Error" destructuring with =.. is not working as planned.
 all_rewrite(Goal1, Ctx, Input, Ans) :-
     compound(Input),
     Input =.. [Head|Kids],
-    all_rewrite_aux(Kids, Goal1, Ctx, Kids1), 
+    all_rewrite_aux(Kids, Goal1, Ctx, [], Kids1), 
     Ans =.. [Head|Kids1], 
     !.
 
@@ -192,12 +193,14 @@ all_rewrite(Goal1, Ctx, Input, Ans) :-
 
 
 
-all_rewrite_aux([], _, _, []).
+all_rewrite_aux([], _, _, Acc, Ans) :-
+    reverse(Acc,Ans).
 
-all_rewrite_aux([X|Xs], Goal1, Ctx, Ans) :-
+all_rewrite_aux([X|Xs], Goal1, Ctx, Acc, Ans) :-
+    writeln(X),
     apply_rewrite(Goal1, Ctx, X, A1),
-    all_rewrite_aux(Xs, Goal1, Ctx, A2),
-    Ans = [A1|A2].
+    all_rewrite_aux(Xs, Goal1, Ctx, [A1|Acc], Ans).
+    
 
 
 %! alltd_rewrite(Goal1, Ctx, Input, Ans)
