@@ -166,3 +166,13 @@ demo13(Ans) :-
 
 demo13a(Ans) :- 
     allbu_trafo(sum_if_number, [1,2,3, number(4),[5, number(6)]], 0, Ans).
+
+
+demo14(X) :- 
+    Tree = node(leaf(1),node(leaf(2), leaf(3))),
+    one_rewrite(add1, Tree, X).
+
+
+demo14a(X) :- 
+    Tree = node(1,node(2,3)),
+    one_rewrite(add1, Tree, X).

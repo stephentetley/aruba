@@ -58,3 +58,26 @@ demo08(X) :-
 
 demo09(X) :- 
     all_rewrite(addn_ctxfree(4), "CtxElephant", [10,11,12], X).
+
+
+demo10(X) :- 
+    Tree = node(1,node(2,3)),
+    id_rewrite("CtxNone", Tree, X).
+
+demo10a(X) :- 
+    Tree = node(1,node(2,3)),
+    one_rewrite(add1_ctxfree, "CtxNone", Tree, X).
+
+demo10b(X) :- 
+    Tree = node(1,node(2,3)),
+    any_rewrite(add1_ctxfree, "CtxNone", Tree, X).
+
+% This is quite _important_ we need to check KURE's behavior here.
+
+demo10c(X) :- 
+    Tree = node(1,node(2,3)),
+    all_rewrite(add1_ctxfree, "CtxNone", Tree, X).
+
+demo10d(X) :- 
+    Tree = node(1,node(2,3)),
+    alltd_rewrite(add1_ctxfree, "CtxNone", Tree, X).

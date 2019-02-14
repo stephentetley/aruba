@@ -15,6 +15,7 @@
             , one_rewrite/4
             , any_rewrite/4
             , all_rewrite/4
+            , alltd_rewrite/4
             ]).
 
 :- meta_predicate
@@ -24,7 +25,8 @@
     choose_rewrite(3,3,+,+,-),
     one_rewrite(3,+,+,-),
     any_rewrite(3,+,+,-),
-    all_rewrite(3,+,+,-).
+    all_rewrite(3,+,+,-),
+    alltd_rewrite(3,+,+,-).
 
 
 % In KURE R(rewrite) is a restriction of T(transform) where input and output types
@@ -107,6 +109,7 @@ one_rewrite(Goal1, Ctx, Input, Ans) :-
 % Destructure, if a functor...
 one_rewrite(Goal1, Ctx, Input, Ans) :-
     compound(Input),
+    write_ln("one_rewrite compound"),
     Input =.. [Head|Kids],
     one_rewrite_aux(Kids, Goal1, Ctx, [], Kids1), 
     Ans =.. [Head|Kids1], 
@@ -195,3 +198,9 @@ all_rewrite_aux([X|Xs], Goal1, Ctx, Ans) :-
     apply_rewrite(Goal1, Ctx, X, A1),
     all_rewrite_aux(Xs, Goal1, Ctx, A2),
     Ans = [A1|A2].
+
+
+%! alltd_rewrite(Goal1, Ctx, Input, Ans)
+
+alltd_rewrite(Goal1, Ctx, Input, Ans) :-
+    sequence_rewrite(apply_rewrite(Goal1), all_rewrite(alltd_rewrite(Goal1)), Ctx, Input, Ans).
