@@ -17,6 +17,8 @@ demo01(Ans) :- id_rewrite(none, 10, Ans).
 
 add1_ctxfree(_, X, Y) :- Y is X + 1.
 
+addn_ctxfree(N, _, X, Y) :- Y is X + N.
+
 demo02(Ans) :- apply_rewrite(add1_ctxfree, none, 10, Ans).
 demo02a(Ans) :- apply_rewrite(add1_ctxfree, none, [10,11,12], Ans).
 
@@ -30,9 +32,11 @@ demo04a(X) :- apply_rewrite(const_rewrite(101), "CtxElephant", 4, X).
 demo05(X) :- 
     sequence_rewrite(add1_ctxfree, add1_ctxfree, "CtxElephant", 10, X).
 
+% false
 demo05a(X) :- 
     sequence_rewrite(add1_ctxfree, add1_ctxfree, "CtxElephant", "String", X).
 
+% false
 demo05b(X) :- 
     sequence_rewrite(fail_rewrite, add1_ctxfree, "CtxElephant", 10, X).
 
@@ -43,3 +47,14 @@ demo06(X) :-
 %% false.
 demo06a(X) :- 
     choose_rewrite(fail_rewrite, add1_ctxfree, "CtxElephant", "String", X).
+
+demo07(X) :- 
+    one_rewrite(add1_ctxfree, "CtxElephant", [10,11,12], X).
+
+
+demo08(X) :- 
+    any_rewrite(add1_ctxfree, "CtxElephant", [10,11,12], X).
+
+
+demo09(X) :- 
+    all_rewrite(addn_ctxfree(4), "CtxElephant", [10,11,12], X).
