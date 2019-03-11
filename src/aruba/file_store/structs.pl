@@ -12,6 +12,8 @@
             , file_object_modification_time/2
             , file_object_mode/2
             , file_object_size/2
+            , cons_file_object/5
+
             , is_folder_object/1
             , folder_object_data/3
             , make_folder_object/3
@@ -19,9 +21,13 @@
             , folder_object_modification_time/2
             , folder_object_mode/2
             , folder_object_kids/2
+            , cons_folder_object/5
+
             , is_file_store/1
             , file_store_path/2
             , file_store_kids/2
+            , cons_file_store/3
+            
             , file_object_modification_timestamp/2            
             , folder_object_modification_timestamp/2
             ]).
@@ -39,6 +45,21 @@ user:file_search_path(aruba_base, '../base').
 
 :- record file_store(path:text=none, kids:list=[]).
 
+
+cons_file_object(Name, Timestamp, Mode, Size, Ans) :- 
+    make_file_object([ name(Name), modification_time(Timestamp)
+                     , mode(Mode), size(Size)], Ans).
+
+
+
+cons_folder_object(Name, Timestamp, Mode, Kids, Ans) :- 
+    make_folder_object([ name(Name), modification_time(Timestamp)
+                       , mode(Mode), kids(Kids)], Ans).
+
+
+
+cons_file_store(Path, Kids, Ans) :- 
+    make_file_store([ path(Path), kids(Kids)], Ans).
 
 % file_object(file_object(_,_,_,_)).
 

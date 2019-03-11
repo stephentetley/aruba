@@ -18,15 +18,18 @@ user:file_search_path(aruba_base, '../base').
 :- use_module(aruba_base(base_utils)).
 :- use_module(aruba_base(base_traversals)).
 :- use_module(structs).
+:- use_module(traversals).
 
 
 
 % count_files
 
-count_files_aux(file_object(_,_,_,_), A, A1) :- 
-    A1 is A + 1.
+count_files_aux(Input, A, A1) :- 
+    (is_file_object(Input)
+    -> A1 is A + 1
+    ; A1 is A).
 
-count_files_aux(_, A, A).
+
 
 
 /* count_files(Fs, Count) :- 
@@ -35,7 +38,7 @@ count_files_aux(_, A, A).
     alltd_trafo(count_files_aux, Kids, 0, Count), !. */
 
 count_files(Fo, Count) :- 
-    alltd_trafo(count_files_aux, Fo, 0, Count), !.
+    alltd_transform(count_files_aux, Fo, 0, Count), !.
 
 % count_folders
 
@@ -46,7 +49,7 @@ count_folders_aux(_, A, A).
 
 
 count_folders(Fo,Count) :- 
-    alltd_trafo(count_folders_aux, Fo, 0, Count), !.    
+    alltd_transform(count_folders_aux, Fo, 0, Count), !.    
 
 % count_kids
 % counts both files and folders.
@@ -63,7 +66,7 @@ count_kids_aux(_, Acc, Acc).
 
 
 count_kids(Fo, Count) :- 
-    alltd_trafo(count_kids_aux, Fo, 0, Count), !.
+    alltd_transform(count_kids_aux, Fo, 0, Count), !.
 
 
 
@@ -76,7 +79,7 @@ store_size_aux(_, A, A).
 
 
 store_size(Store, Size) :-
-    alltd_trafo(store_size_aux, Store, 0, Size), !.
+    alltd_transform(store_size_aux, Store, 0, Size), !.
 
 
 % latest_modification_time
@@ -93,7 +96,7 @@ latest_modification_aux(folder_object(_, Stamp, _, _), T0, T) :-
     latest(T0, T1, T).
 
 latest_modification_time(Store, Stamp) :-
-    alltd_trafo(latest_modification_aux, Store, 0, Stamp), !.
+    alltd_transform(latest_modification_aux, Store, 0, Stamp), !.
 
 
 
@@ -123,6 +126,6 @@ earliest_cast(Stamp0, Stamp) :-
 
 
 earliest_modification_time(Store, Stamp) :-
-    alltd_trafo(earliest_modification_aux, Store, zero, S0), 
+    alltd_transform(earliest_modification_aux, Store, zero, S0), 
     earliest_cast(S0, Stamp), !.
 

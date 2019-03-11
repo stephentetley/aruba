@@ -10,6 +10,15 @@ user:file_search_path(factbase, 'factbase').
 
 :- use_module(factbase(directories), [listing/1 as get_store]).
 
+demo0(X) :- 
+    Input = file_object("actions_xsb.pl", "2018-05-18T09:51:00", '-a----', 115),
+    ( is_file_object(Input) -> write_ln("okay")),    
+    count_files(Input,X).
+
+demo0b(X) :- 
+    Input = file_object("actions_xsb.pl", "2018-05-18T09:51:00", '-a----', 115),
+    file_object_name(Input,X).
+
 % count_kids 133 + 56 = 189
 demo01(N) :- 
     get_store(Store),

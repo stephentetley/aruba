@@ -1,91 +1,139 @@
 /*
     traversals.pl
-    Copyright (c) Stephen Tetley 2018
+    Copyright (c) Stephen Tetley 2018,2019
     License: BSD 3 Clause
 */    
 
 
 :- module(traversals, 
-            [ seq_accum/5
-            , seq_zero/3
-            , choose_accum/5
-            , choose_zero/3
-            , everywhere/4 
-            , onelayer/4
+            [ 
+            
+            /* file_object_transform/4, 
+              file_object_rewrite/3
+            , all_folder_object_transform/5
+            , all_folder_object_rewrite/3
+            , any_folder_object_transform/5
+            , any_folder_object_rewrite/3
+            , one_folder_object_transform/5
+            , one_folder_object_rewrite/3
+            , all_file_store_transform/5
+            */
+
+              alltd_rewrite/3
+            , alltd_transform/4
+
             ]).
 
+%% Unfortuately we can't rely on Prolog's Univ if we want to replicate
+%% KURE. We need to put the "universe" of traversals under user control.
 
+user:file_search_path(aruba_base, '../base').
+
+:- use_module(aruba_base(base_traversals)).
 :- use_module(structs).
 
 % See SWI Manual section 6.4 Deining a meta-predicate
 
 :- meta_predicate
-    everywhere(3,+,+,-), 
-    onelayer(3,+,+,-).
+    /* file_object_transform(6,+,+,-),
+    file_object_rewrite(2,+,-),
+    all_folder_object_transform(3,5,+,+,-),
+    all_folder_object_rewrite(3,+,-),
+    any_folder_object_transform(3,5,+,+,-),
+    any_folder_object_rewrite(3,+,-),
+    one_folder_object_transform(3,5,+,+,-),
+    one_folder_object_rewrite(3,+,-),
+    all_file_store_transform(3,3,+,+,-),
+    */
+    alltd_rewrite(2,+,-),
+    alltd_transform(3,+,+,-).
 
 
-% 
+% So-called congruence combinators
 
-seq_accum(Goal1, Goal2, Object, Init, Ans) :-
-    call(Goal1, Object, Init, A1),
-    call(Goal2, Object, A1, Ans).
+% Because we have no mzero (c.f KURE) we must always define traversals with an accumulator
 
-seq_zero(Goal1, Goal2, Object) :-
-    call(Goal1, Object),
-    call(Goal2, Object).
+lift_rewrite(R1, Input, _, Ans) :-
+    call(R1, Input, Ans).
 
-choose_accum(Goal1, Goal2, Object, Init, Ans) :-
-    ( call(Goal1,Object,Init,A0) ->
-        Ans = A0
-    ; 
-        call(Goal2, Object, Init, A1), 
-        Ans = A1
-    ). 
+% No kids
+% Build1 : string * timestamp * props * int * Acc -> Ans 
+/* file_object_transform(Build, Input, Acc, Ans) :-
+    call(Build, Name, Time, Props, Size, Acc, Ans). 
 
-choose_zero(Goal1, Goal2, Object) :-
-    (call(Goal1,Object) ->
-        !
-    ;   call(Goal2,Object)
-    ).   
+% T1 : file_object -> file_onject
+file_object_rewrite(R1, Input, Ans) :- 
+    apply_rewrite(R1, Input, Ans).
+
+% T1 : (folder_object | file_object) * Acc -> Ans
+% Build : string * timestamp * props * Acc -> Ans 
+all_folder_object_transform(T1, Build, folder_object(Name, Time, Props, Kids), Acc, Ans) :-
+    all_transform_list(T1, Kids, Acc, A1),
+    call(Build, Name, Time, Props, A1, Ans).
+
+all_folder_object_rewrite(R1, Input, Ans) :- 
+    all_folder_object_transform(lift_rewrite(R1), cons_folder_object, Input, false, Ans).
+
+any_folder_object_transform(T1, Build, folder_object(Name, Time, Props, Kids), Acc, Ans) :-
+    any_transform_list(T1, Kids, Acc, A1),
+    call(Build, Name, Time, Props, A1, Ans).
+
+any_folder_object_rewrite(R1, Input, Ans) :- 
+    any_folder_object_transform(lift_rewrite(R1), cons_folder_object, Input, false, Ans).
+
+one_folder_object_transform(T1, Build, folder_object(Name, Time, Props, Kids), Acc, Ans) :-
+    one_transform_list(T1, Kids, Acc, A1),
+    call(Build, Name, Time, Props, A1, Ans).
+
+one_folder_object_rewrite(R1, Input, Ans) :- 
+    one_folder_object_transform(lift_rewrite(R1), cons_folder_object, Input, false, Ans).
 
 
-% TODO 
-% Implement a suite of traversals (c.f Stratego, Strafunski, KURE, ...).
+% T1 : (folder_object | file_object) * Acc -> Ans
+% Build : string * Acc -> Ans 
+all_file_store_transform(T1, Build, file_store(Path, Kids), Acc, Ans) :-
+    all_transform_list(T1, Kids, Acc, A1),
+    call(Build, Path, A1, Ans).
 
-% TODO 
-% Handle failure appropriately
+all_file_store_rewrite(R1, Input, Ans) :- 
+    all_file_store_transform(lift_rewrite(R1), cons_file_store, Input, false, Ans).
+*/
 
-% everywhere considered deprecated - we should be moving to use base_traversals.
+%% alltd_rewrite
+
+alltd_rewrite(R1, Input, Ans) :-
+    is_file_object(Input),
+    apply_rewrite(R1, Input, Ans).
+
+alltd_rewrite(R1, Input, Ans) :-
+    is_folder_object(Input),
+    apply_rewrite(R1, Input, A1),
+    A1 = folder_object(Name, Time, Mode, Kids1),
+    all_rewrite_list(alltd_rewrite(R1), Kids1, Kids2),
+    cons_folder_object(Name, Time, Mode, Kids2, Ans).
+
+alltd_rewrite(R1, Input, Ans) :-
+    is_file_store(Input),
+    apply_rewrite(R1, Input, A1),
+    A1 = file_store(Path1, Kids1),
+    all_rewrite_list(alltd_rewrite(R1), Kids1, Kids2),
+    cons_file_store(Path1, Kids2, Ans).
 
 
-everywhere_list([], _, A, A).
+%% alltd_transform
 
-everywhere_list([X0|Xs], Goal, A0, A) :-
-    everywhere_aux(X0, Goal, A0, A1),
-    everywhere_list(Xs, Goal, A1, A).
+alltd_transform(T1, Input, Acc, Ans) :-
+    is_file_object(Input),
+    apply_transform(T1, Input, Acc, Ans).
+
+alltd_transform(T1, Input, Acc, Ans) :-
+    is_folder_object(Input),
+    apply_transform(T1, Input, Acc, A1),
+    folder_object_kids(Input, Kids1),
+    all_transform_list(alltd_transform(T1), Kids1, A1, Ans).
     
-everywhere_aux(Fo, Goal, A0, A) :- 
-    Fo = file_object(_,_,_,_),
-    call(Goal, A0, Fo, A).
-
-everywhere_aux(Fo, Goal, A0, A) :- 
-    Fo = folder_object(_,_,_,Kids),
-    call(Goal, A0, Fo, A1),
-    everywhere_list(Kids, Goal, A1, A).
-
-everywhere(Goal, Store, Init, Answer) :- 
-    file_store_kids(Store, Kids),
-    everywhere_list(Kids, Goal, Init, Answer).
-
-
-% Naming note - onelayer is accumulating.
-
-onelayer_list(_, [], A, A).
-
-onelayer_list(Goal, [X|Xs], A0, A) :-
-    call(Goal, X, A0, A1),
-    onelayer_list(Goal, Xs, A1, A).
-
-onelayer(Goal, Fo, Init, Answer) :- 
-    file_store_kids(Fo, Kids),
-    onelayer_list(Goal, Kids, Init, Answer), !.
+alltd_transform(T1, Input, Acc, Ans) :-
+    is_file_store(Input),
+    apply_transform(T1, Input, Acc, A1),
+    file_store_kids(Input, Kids1),
+    all_transform_list(alltd_transform(T1), Kids1, A1, Ans).    
