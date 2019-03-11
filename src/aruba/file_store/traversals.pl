@@ -6,20 +6,13 @@
 
 
 :- module(traversals, 
-            [ 
-            
-            /* file_object_transform/4, 
-              file_object_rewrite/3
-            , all_folder_object_transform/5
-            , all_folder_object_rewrite/3
-            , any_folder_object_transform/5
-            , any_folder_object_rewrite/3
-            , one_folder_object_transform/5
-            , one_folder_object_rewrite/3
-            , all_file_store_transform/5
-            */
-
-              alltd_rewrite/3
+            [ all_transform/4
+            , all_rewrite/3
+            , any_transform/4
+            , any_rewrite/3
+            , one_transform/4
+            , one_rewrite/3
+            , alltd_rewrite/3
             , alltd_transform/4
 
             ]).
@@ -35,69 +28,58 @@ user:file_search_path(aruba_base, '../base').
 % See SWI Manual section 6.4 Deining a meta-predicate
 
 :- meta_predicate
-    /* file_object_transform(6,+,+,-),
-    file_object_rewrite(2,+,-),
-    all_folder_object_transform(3,5,+,+,-),
-    all_folder_object_rewrite(3,+,-),
-    any_folder_object_transform(3,5,+,+,-),
-    any_folder_object_rewrite(3,+,-),
-    one_folder_object_transform(3,5,+,+,-),
-    one_folder_object_rewrite(3,+,-),
-    all_file_store_transform(3,3,+,+,-),
-    */
+    all_transform(3,+,+,-), 
+    all_rewrite(2,+,-), 
+    any_transform(3,+,+,-), 
+    any_rewrite(2,+,-), 
+    one_transform(3,+,+,-), 
+    one_rewrite(2,+,-), 
+
     alltd_rewrite(2,+,-),
     alltd_transform(3,+,+,-).
 
-
-% So-called congruence combinators
-
-% Because we have no mzero (c.f KURE) we must always define traversals with an accumulator
-
-lift_rewrite(R1, Input, _, Ans) :-
+lift_rewrite(R1, Input, _, Ans) :- 
     call(R1, Input, Ans).
 
-% No kids
-% Build1 : string * timestamp * props * int * Acc -> Ans 
-/* file_object_transform(Build, Input, Acc, Ans) :-
-    call(Build, Name, Time, Props, Size, Acc, Ans). 
+%% Transform all children
 
-% T1 : file_object -> file_onject
-file_object_rewrite(R1, Input, Ans) :- 
-    apply_rewrite(R1, Input, Ans).
+all_transform(_, file_object(_,_,_,_), Acc, Acc).
+    
+all_transform(T1, folder_object(_,_,_,Kids), Acc, Ans) :-
+    all_transform_list(T1, Kids, Acc, Ans).
 
-% T1 : (folder_object | file_object) * Acc -> Ans
-% Build : string * timestamp * props * Acc -> Ans 
-all_folder_object_transform(T1, Build, folder_object(Name, Time, Props, Kids), Acc, Ans) :-
-    all_transform_list(T1, Kids, Acc, A1),
-    call(Build, Name, Time, Props, A1, Ans).
+all_transform(T1, file_store(_,Kids), Acc, Ans) :-
+    all_transform_list(T1, Kids, Acc, Ans).
 
-all_folder_object_rewrite(R1, Input, Ans) :- 
-    all_folder_object_transform(lift_rewrite(R1), cons_folder_object, Input, false, Ans).
+all_rewrite(R1, Input, Ans) :- 
+    all_transform(lift_rewrite(R1), Input, _, Ans).
 
-any_folder_object_transform(T1, Build, folder_object(Name, Time, Props, Kids), Acc, Ans) :-
-    any_transform_list(T1, Kids, Acc, A1),
-    call(Build, Name, Time, Props, A1, Ans).
+%% Transform some children (where the transform is successful)
 
-any_folder_object_rewrite(R1, Input, Ans) :- 
-    any_folder_object_transform(lift_rewrite(R1), cons_folder_object, Input, false, Ans).
+any_transform(_, file_object(_,_,_,_), _, false).
+    
+any_transform(T1, folder_object(_,_,_,Kids), Acc, Ans) :-
+    any_transform_list(T1, Kids, Acc, Ans).
 
-one_folder_object_transform(T1, Build, folder_object(Name, Time, Props, Kids), Acc, Ans) :-
-    one_transform_list(T1, Kids, Acc, A1),
-    call(Build, Name, Time, Props, A1, Ans).
+any_transform(T1, file_store(_,Kids), Acc, Ans) :-
+    any_transform_list(T1, Kids, Acc, Ans).
 
-one_folder_object_rewrite(R1, Input, Ans) :- 
-    one_folder_object_transform(lift_rewrite(R1), cons_folder_object, Input, false, Ans).
+any_rewrite(R1, Input, Ans) :- 
+    any_transform(lift_rewrite(R1), Input, _, Ans).
 
+%% Transform a single child
 
-% T1 : (folder_object | file_object) * Acc -> Ans
-% Build : string * Acc -> Ans 
-all_file_store_transform(T1, Build, file_store(Path, Kids), Acc, Ans) :-
-    all_transform_list(T1, Kids, Acc, A1),
-    call(Build, Path, A1, Ans).
+one_transform(_, file_object(_,_,_,_), _, false).
+    
+one_transform(T1, folder_object(_,_,_,Kids), Acc, Ans) :-
+    one_transform_list(T1, Kids, Acc, Ans).
 
-all_file_store_rewrite(R1, Input, Ans) :- 
-    all_file_store_transform(lift_rewrite(R1), cons_file_store, Input, false, Ans).
-*/
+one_transform(T1, file_store(_,Kids), Acc, Ans) :-
+    one_transform_list(T1, Kids, Acc, Ans).
+
+one_rewrite(R1, Input, Ans) :- 
+    one_transform(lift_rewrite(R1), Input, _, Ans).
+
 
 %% alltd_rewrite
 
@@ -108,16 +90,16 @@ alltd_rewrite(R1, Input, Ans) :-
 alltd_rewrite(R1, Input, Ans) :-
     is_folder_object(Input),
     apply_rewrite(R1, Input, A1),
-    A1 = folder_object(Name, Time, Mode, Kids1),
+    folder_object_kids(A1, Kids1),
     all_rewrite_list(alltd_rewrite(R1), Kids1, Kids2),
-    cons_folder_object(Name, Time, Mode, Kids2, Ans).
+    set_folder_object_field(kids(Kids2), A1, Ans).
 
 alltd_rewrite(R1, Input, Ans) :-
     is_file_store(Input),
     apply_rewrite(R1, Input, A1),
-    A1 = file_store(Path1, Kids1),
+    file_store_kids(A1, Kids1),
     all_rewrite_list(alltd_rewrite(R1), Kids1, Kids2),
-    cons_file_store(Path1, Kids2, Ans).
+    set_file_store_field(kids(Kids2), A1, Ans).
 
 
 %% alltd_transform

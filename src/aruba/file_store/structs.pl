@@ -12,6 +12,8 @@
             , file_object_modification_time/2
             , file_object_mode/2
             , file_object_size/2
+            , set_file_object_field/3
+            , set_file_object_fields/3
             , cons_file_object/5
 
             , is_folder_object/1
@@ -21,13 +23,17 @@
             , folder_object_modification_time/2
             , folder_object_mode/2
             , folder_object_kids/2
+            , set_folder_object_field/3
+            , set_folder_object_fields/3
             , cons_folder_object/5
 
             , is_file_store/1
             , file_store_path/2
             , file_store_kids/2
+            , set_file_store_field/3
+            , set_file_store_fields/3
             , cons_file_store/3
-            
+
             , file_object_modification_timestamp/2            
             , folder_object_modification_timestamp/2
             ]).
