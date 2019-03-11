@@ -1,11 +1,12 @@
 % file_metrics.pl
 
-user:file_search_path(aruba, '../src/aruba').
-user:file_search_path(factbase, '../src/factbase').
+user:file_search_path(aruba_base, '../../src/aruba/base').
+user:file_search_path(file_store, '../../src/aruba/file_store').
+user:file_search_path(factbase, 'factbase').
 
-:- use_module(aruba(base/base_utils)).
-:- use_module(aruba(file_store/structs)).
-:- use_module(aruba(file_store/metrics)).
+:- use_module(aruba_base(base_utils)).
+:- use_module(file_store(structs)).
+:- use_module(file_store(metrics)).
 
 :- use_module(factbase(directories), [listing/1 as get_store]).
 

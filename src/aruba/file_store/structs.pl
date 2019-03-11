@@ -26,9 +26,11 @@
             , folder_object_modification_timestamp/2
             ]).
 
+user:file_search_path(aruba_base, '../base').
+
 :- use_module(library(record)).
 
-:- use_module(aruba/base/base_utils).
+:- use_module(aruba_base(base_utils)).
 
 
 :- record file_object(name:text=none, modification_time:text=none, mode:text=none, size:integer=0).

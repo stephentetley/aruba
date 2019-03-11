@@ -15,7 +15,7 @@
             ]).
 
 
-:- use_module(aruba/file_store/structs).
+:- use_module(structs).
 
 % See SWI Manual section 6.4 Deining a meta-predicate
 

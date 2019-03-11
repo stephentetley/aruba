@@ -1,6 +1,6 @@
 /*
     metrics.pl
-    Copyright (c) Stephen Tetley 2018
+    Copyright (c) Stephen Tetley 2018,2019
     License: BSD 3 Clause
 */    
 
@@ -13,9 +13,11 @@
             , earliest_modification_time/2
             ]).
 
-:- use_module(aruba/base/base_utils).
-:- use_module(aruba/base/base_traversals).
-:- use_module(aruba/file_store/structs).
+user:file_search_path(aruba_base, '../base').
+
+:- use_module(aruba_base(base_utils)).
+:- use_module(aruba_base(base_traversals)).
+:- use_module(structs).
 
 
 

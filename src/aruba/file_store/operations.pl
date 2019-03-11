@@ -1,6 +1,6 @@
 /*
     operations.pl
-    Copyright (c) Stephen Tetley 2018
+    Copyright (c) Stephen Tetley 2018,2019
     License: BSD 3 Clause
 */   
 
@@ -15,7 +15,7 @@
 :- use_module(library(yall)). 
 :- use_module(library(pcre)).
 
-:- use_module(aruba/file_store/structs).
+:- use_module(structs).
 
 
 
