@@ -54,15 +54,10 @@
         test_data::listing(Store),
         metrics_lib::count_kids(Store, Ans).
 
-    :- public(demo06a/1).
-    demo06a(Ans) :-         
+    :- public(demo07/1).
+    demo07(Ans) :-         
         test_data::listing(Store),
-        metrics_lib::count_kids_aux(Store, 0, Ans). 
-    
-    :- public(demo06b/1).
-    demo06b(Ans) :-         
-        test_data::listing(Store),
-        file_store_traversals::all_transform(count_kids_aux, Store, 0, Ans).  
+        metrics_lib::count_folders(Store, Ans).
 
 :- end_object.
 

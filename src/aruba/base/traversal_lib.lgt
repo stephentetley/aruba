@@ -43,7 +43,6 @@
     :- meta_predicate(apply_transform(3,*,*,*)).
     :- mode(apply_transform(+callable, +term, +term, -term), zero_or_more).
     apply_transform(Goal1, Input, Acc, Ans) :-
-        writeln('apply_transform'),
         catch( call(Goal1, Input, Acc, Ans),
             _,
             false).
@@ -74,16 +73,12 @@
     :- meta_predicate(all_transform_list(3,*,*,*)).
     :- mode(all_transform_list(+callable, +term, +term, -term), zero_or_more).    
     all_transform_list(Goal1, Input, Acc, Ans) :-
-        writeln('all_transform_list'),
-        writeln(Acc),
         all_transform_list_aux(Input, Goal1, Acc, Ans).
     
     all_transform_list_aux([], _, Ans, Ans).
         
     
     all_transform_list_aux([X|Xs], Goal1, Acc, Ans) :-
-        writeln('all_transform_list_aux'),
-        writeln(Acc),
         ::apply_transform(Goal1, X, Acc, Acc1),
         all_transform_list_aux(Xs, Goal1, Acc1, Ans).
 
@@ -91,8 +86,6 @@
     :- meta_predicate(alltd_transform(3,*,*,*)).
     :- mode(alltd_transform(+callable, +term, +term, -term), zero_or_more).
     alltd_transform(T1, Input, Acc, Ans) :-
-        writeln('alltd_transform'),
-        writeln(Acc),
         ::apply_transform(T1, Input, Acc, A1),
         ::all_transform(::alltd_transform(T1), Input, A1, Ans).
 

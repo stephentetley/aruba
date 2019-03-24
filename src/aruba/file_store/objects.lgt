@@ -106,19 +106,14 @@
     % implements all_transform
     all_transform(T1, Input, Acc, Ans) :- 
         Input = folder_object(_, _, _, Kids),
-        writeln('folder_object'),
         ::all_transform_list(T1, Kids, Acc, Ans),
         !.
 
     all_transform(_, Input, Ans, Ans) :-
-        Input = file_object(_, _, _, _),
-        writeln('file_object').         
+        Input = file_object(_, _, _, _).         
 
     all_transform(T1, Input, Acc, Ans) :- 
         Input = file_store(_, Kids),
-        writeln('file_store'),
-        {length(Kids,L1)},
-        writeln(L1),
         ::all_transform_list(T1, Kids, Acc, Ans),
         !.
 
