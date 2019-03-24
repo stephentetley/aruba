@@ -7,10 +7,10 @@
 
 :- object(test_data).
 
-	%% Happily we can include Prolog files with SWI specific modules.
-	
-	:- include('directories.pl').
+    %% Happily we can include Prolog files with SWI specific modules.
 
-	:- public([listing/1]).
-	
+    :- include('directories.pl').
+
+    :- public([listing/1]).
+
 :- end_object.
