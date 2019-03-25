@@ -21,7 +21,8 @@
     
     :- public(count_kids/2).
     count_kids(Fo, Count) :- 
-        file_store_traversals::alltd_transform(metrics_lib::count_kids_aux, Fo, 0, Count), !.
+        file_store_traversals::alltd_transform(metrics_lib::count_kids_aux, Fo, 0, Count), 
+        !.
 
 
     % count_files
@@ -51,5 +52,32 @@
     count_folders(Fo, Count) :- 
         file_store_traversals::alltd_transform(metrics_lib::count_folders_aux, Fo, 0, Count), 
         !.
+
+    % store_size
+    :- public(store_size_aux/3).
+    :- mode(store_size_aux(+term, +term, -term), one).
+    store_size_aux(file_object(_,_,_,Sz), Acc, N) :- 
+        N is Acc + Sz.
+
+    store_size_aux(_, A, A).
+
+    :- public(store_size/2).
+    store_size(Store, Size) :-
+        file_store_traversals::alltd_transform(metrics_lib::store_size_aux, Store, 0, Size), !.
+
+    % latest_modification_time
+    :- public(latest_modification_aux/3).
+    :- mode(latest_modification_aux(+term, +term, -term), one).
+    latest_modification_aux(file_object(_, Stamp, _, _), T0, Latest) :-
+        { iso_8601_stamp(Stamp, T1) }, 
+        Latest is max(T0, T1).
+
+    latest_modification_aux(folder_object(_, Stamp, _, _), T0, Latest) :- 
+        { iso_8601_stamp(Stamp, T1) },
+        Latest is max(T0, T1).
+        
+    :- public(latest_modification_time/2).
+    latest_modification_time(Store, Stamp) :-
+        file_store_traversals::alltd_transform(metrics_lib::latest_modification_aux, Store, 0, Stamp), !.
 
 :- end_object.	

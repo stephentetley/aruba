@@ -59,5 +59,15 @@
         test_data::listing(Store),
         metrics_lib::count_folders(Store, Ans).
 
+    :- public(demo08/1).
+    demo08(Ans) :-         
+        test_data::listing(Store),
+        metrics_lib::store_size(Store, Ans).
+
+    :- public(demo09/1).
+    demo09(Ans) :-         
+        test_data::listing(Store),
+        metrics_lib::latest_modification_time(Store, Ans).
+
 :- end_object.
 
