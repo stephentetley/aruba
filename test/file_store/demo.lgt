@@ -69,5 +69,13 @@
         test_data::listing(Store),
         metrics_lib::latest_modification_time(Store, Ans).
 
+    :- public(demo09a/1).
+    demo09a(Ans) :- 
+        base_utils::iso_8601_stamp("2018-05-18T09:51:00", Ans).
+
+    :- public(demo09b/1).
+    demo09b(Ans) :- 
+        metrics_lib::latest_modification_aux(file_object("assetnames.pl", "2018-07-19T10:34:00", '-a----', 758496), 1526637060.0, Ans).
+
 :- end_object.
 

@@ -69,12 +69,17 @@
     :- public(latest_modification_aux/3).
     :- mode(latest_modification_aux(+term, +term, -term), one).
     latest_modification_aux(file_object(_, Stamp, _, _), T0, Latest) :-
-        { iso_8601_stamp(Stamp, T1) }, 
-        Latest is max(T0, T1).
-
+        base_utils::iso_8601_stamp(Stamp, T1), 
+        Latest is max(T0, T1),
+        !.
+        
     latest_modification_aux(folder_object(_, Stamp, _, _), T0, Latest) :- 
-        { iso_8601_stamp(Stamp, T1) },
-        Latest is max(T0, T1).
+        base_utils::iso_8601_stamp(Stamp, T1),
+        Latest is max(T0, T1), 
+        !.
+
+    latest_modification_aux(Obj, T0, T0) :- 
+        file_store_structs::is_file_store(Obj), !.
         
     :- public(latest_modification_time/2).
     latest_modification_time(Store, Stamp) :-

@@ -6,6 +6,7 @@
 
 
 :- initialization((
+    logtalk_load('../../src/aruba/base/base_logtalk.lgt'),
     logtalk_load('../../src/aruba/base/traversal_lib.lgt'),
     logtalk_load('../../src/aruba/file_store/objects.lgt'),
     logtalk_load('../../src/aruba/file_store/metrics_lib.lgt'),
