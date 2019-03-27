@@ -82,7 +82,9 @@
         file_store_structs::is_file_store(Obj), !.
         
     :- public(latest_modification_time/2).
-    latest_modification_time(Store, Stamp) :-
-        file_store_traversals::alltd_transform(metrics_lib::latest_modification_aux, Store, 0, Stamp), !.
+    latest_modification_time(Store, Time) :-
+        file_store_traversals::alltd_transform(metrics_lib::latest_modification_aux, Store, 0, Stamp), 
+        base_utils::iso_8601_text(Stamp, Time),
+        !.
 
 :- end_object.	

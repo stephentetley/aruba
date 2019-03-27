@@ -12,6 +12,7 @@
             ]).
 
 :- use_module(library(csv)).
+:- use_module(library(date)).
 
 output_csv(File, Headers, Rows) :-
     setup_call_cleanup(
