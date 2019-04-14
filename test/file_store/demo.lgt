@@ -79,3 +79,19 @@
 
 :- end_object.
 
+:- object(test2(_Factbase)).
+    
+    :- public(demo_zero/0).
+    demo_zero :- 
+        writeln("Dummy").
+
+    :- public(demo01/1).
+    demo01(Ans) :- 
+        parameter(1, Factbase),
+        metrics_lib::latest_modification_time(Factbase, Ans).
+
+:- end_object.
+
+% ?- {'factbase/directories.pl'}
+% ?- directories::listing(X), test2(X)::demo01(Ans).
+

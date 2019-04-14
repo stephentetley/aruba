@@ -5,7 +5,7 @@
 */   
 
 % NOTE
-% aux functions have to be public (protected dosn't work).
+% aux functions have to be public (protected doesn't work).
 
 :- object(metrics_lib).
 

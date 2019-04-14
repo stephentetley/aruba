@@ -1,6 +1,12 @@
 # Notes
 
-In VS Code start a terminal an run (must include the ampersand):
+
+
+In VS Code start a terminal, change directory to test\file_store
+
+    cd test\file_store
+
+Run the SWI Prolog toplevel (must include the ampersand):
 
     & 'C:\Program Files\swipl\bin\swipl.exe'
 
@@ -10,4 +16,13 @@ Load Logtalk:
 
 Load all files:
 
-    ?- logtalk_load('test/file_store/loader.lgt').
+    ?- logtalk_load('loader.lgt').
+
+Alteratively:
+
+    ?- {loader}.
+
+Dummy:
+
+    ?- {'factbase/site_work_sorted.pl'}.
+    ?- site_work_sorted::listing(Y), metrics_lib::count_kids(Y, Ans).
