@@ -84,8 +84,8 @@
 
 
 :- object(file_store_traversals,
-    implements(walkerp),
-    imports(traversals)).
+    implements([rewritep, transformp]),
+    imports([rewrite, transform])).
 
     % implements all_rewrite
     all_rewrite(R1, Input, Ans) :- 

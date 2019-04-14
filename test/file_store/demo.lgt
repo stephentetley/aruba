@@ -95,3 +95,7 @@
 % ?- {'factbase/directories.pl'}
 % ?- directories::listing(X), test2(X)::demo01(Ans).
 
+
+
+
+
