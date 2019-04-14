@@ -103,6 +103,38 @@
         Ans = file_store(Path, Kids1),
         !.
 
+    % implements one_rewrite
+    any_rewrite(R1, Input, Ans) :- 
+        Input = folder_object(Name, ModificationTime, Mode, Kids),
+        ::any_rewrite_list(R1, Kids, Kids1),
+        Ans = folder_object(Name, ModificationTime, Mode, Kids1),
+        !.
+    
+        any_rewrite(_, Ans, Ans) :-
+        Ans = file_object(_, _, _, _).
+    
+        any_rewrite(R1, Input, Ans) :- 
+        Input = file_store(Path, Kids),
+        ::any_rewrite_list(R1, Kids, Kids1),
+        Ans = file_store(Path, Kids1),
+        !.
+
+    % implements one_rewrite
+    one_rewrite(R1, Input, Ans) :- 
+        Input = folder_object(Name, ModificationTime, Mode, Kids),
+        ::one_rewrite_list(R1, Kids, Kids1),
+        Ans = folder_object(Name, ModificationTime, Mode, Kids1),
+        !.
+    
+    one_rewrite(_, Ans, Ans) :-
+        Ans = file_object(_, _, _, _).
+    
+    one_rewrite(R1, Input, Ans) :- 
+        Input = file_store(Path, Kids),
+        ::one_rewrite_list(R1, Kids, Kids1),
+        Ans = file_store(Path, Kids1),
+        !.
+
     % implements all_transform
     all_transform(T1, Input, Acc, Ans) :- 
         Input = folder_object(_, _, _, Kids),
@@ -115,6 +147,20 @@
     all_transform(T1, Input, Acc, Ans) :- 
         Input = file_store(_, Kids),
         ::all_transform_list(T1, Kids, Acc, Ans),
+        !.
+
+    % implements all_transform
+    one_transform(T1, Input, Acc, Ans) :- 
+        Input = folder_object(_, _, _, Kids),
+        ::one_transform_list(T1, Kids, Acc, Ans),
+        !.
+
+        one_transform(_, Input, Ans, Ans) :-
+        Input = file_object(_, _, _, _).         
+
+    one_transform(T1, Input, Acc, Ans) :- 
+        Input = file_store(_, Kids),
+        ::one_transform_list(T1, Kids, Acc, Ans),
         !.
 
 :- end_object. 

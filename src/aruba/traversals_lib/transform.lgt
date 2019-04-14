@@ -28,6 +28,21 @@
         ::apply_transform(Goal1, X, Acc, Acc1),
         all_transform_list_aux(Xs, Goal1, Acc1, Ans).
 
+    % Transform one elements in a list.
+    :- public(one_transform_list/4).
+    :- meta_predicate(one_transform_list(3,*,*,*)).
+    :- mode(one_transform_list(+callable, +term, +term, -term), zero_or_more).        
+    one_transform_list(Goal1, Input, Acc, Ans) :-
+        one_transform_list_aux(Input, Goal1, Acc, Ans).
+    
+    one_transform_list_aux([], _, _, _) :- false.
+    
+    one_transform_list_aux([X|Xs], Goal1, Acc, Ans) :-
+        (   ::apply_transform(Goal1, X, Acc, A0) -> 
+            Ans = A0
+        ;   one_transform_list_aux(Xs, Goal1, Acc, Ans)).
+        
+
     % alltd_rewrite
     :- public(alltd_transform/4).
     :- meta_predicate(alltd_transform(3,*,*,*)).
