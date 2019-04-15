@@ -46,7 +46,8 @@
         file_store_structs::is_folder_object(Input),        
         Acc1 is Acc + 1.
 
-        count_folders_aux(_, Acc, Acc).
+    %% fall through case
+    count_folders_aux(_, Acc, Acc).
 
     :- public(count_folders/2).
     count_folders(Fo, Count) :- 
