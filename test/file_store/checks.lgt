@@ -48,7 +48,7 @@
 
     :- public(get_kid_folder/3).
     get_kid_folder(Store, Name, Ans) :- 
-        file_store_traversals::one_transform([Folder, _, Ans]>> (Folder = folder_object(Name,_ ,_, _), Ans = Folder, !), Store, '', Ans).
+        file_store_traversals::one_transform([Folder, _, Ans] >> (Folder = folder_object(Name,_ ,_, _), Ans = Folder, !), Store, '', Ans).
 
 /*     :- public(check_site_work/2).
     check_site_work(Store, Ans) :- 

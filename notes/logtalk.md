@@ -16,11 +16,11 @@ Load Logtalk:
 
 Load all files:
 
-    ?- logtalk_load('loader.lgt').
+    ?- logtalk_load('file_store_test_loader.lgt').
 
 Alteratively:
 
-    ?- {loader}.
+    ?- {file_store_test_loader}.
 
 Dummy:
 
@@ -29,5 +29,20 @@ Dummy:
 
 Hiding variables:
 
+    % Swi-Prolog Yall...
     ?- use_module(library(yall)).
+
+    % Logtalk...
+    ?- {library(metapredicates_loader)}.
+
+    % or...
+    ?- logtalk_load(library(metapredicates_loader)).
+
+    % Action - load a larage examples file...
+    ?- {'factbase/site_work_sorted.pl'}.
+
+    % Run a query, X not shown...
     ?- {Ans}/(site_work_sorted::listing(X), listing(X)::latest_modifaction_time(Ans)).
+
+    % X show, too much output...
+    ?- site_work_sorted::listing(X), listing(X)::latest_modifaction_time(Ans).
