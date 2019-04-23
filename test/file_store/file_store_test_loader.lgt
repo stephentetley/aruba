@@ -12,6 +12,5 @@
     logtalk_load('../../src/aruba/traversals_lib/transform.lgt'),
     logtalk_load('../../src/aruba/file_store/objects.lgt'),
     logtalk_load('../../src/aruba/file_store/metrics_lib.lgt'),
-    logtalk_load('factbase/includes.lgt'),
     logtalk_load('demo.lgt')
 )).

@@ -1,14 +1,20 @@
 /* 
-    loader.lgt
+    demo.lgt
     Copyright (c) Stephen Tetley 2019
     License: BSD 3 Clause
 */  
+
+
+% Use the Prolog test module directly
+% Wrapping it in a Logtalk object is a bit pyrrhic as it only exposes 
+% a single compund atom _listing_.
+:- use_module(factbase/directories).
 
 :- object(test).
 
     :- public(demo01/1).
     demo01(Ans) :- 
-        test_data::listing(Ans).
+        directories::listing(Ans).
 
 
     :- public(demo02a/0).
@@ -25,48 +31,48 @@
 
     :- public(demo03/1).
     demo03(Ans) :-         
-        test_data::listing(Store),
+        directories::listing(Store),
         metrics_lib::count_files(Store, Ans).
 
     :- public(demo03a/1).
     demo03a(Ans) :-         
-        test_data::listing(Store),
+        directories::listing(Store),
         metrics_lib::count_files_aux(Store, 0, Ans).     
 
     :- public(demo03b/1).
     demo03b(Ans) :-         
-        test_data::listing(Store),
+        directories::listing(Store),
         file_store_traversals::all_transform(count_files_aux, Store, 0, Ans).    
 
 
     :- public(demo04/1).
     demo04(Ans) :-         
-        test_data::listing(Store),
+        directories::listing(Store),
         file_store_traversals::id_rewrite(Store, Ans).
 
     :- public(demo05/1).
     demo05(Ans) :-         
-        test_data::listing(Store),
+        directories::listing(Store),
         file_store_traversals::alltd_rewrite(file_store_traversals::id_rewrite, Store, Ans).
 
     :- public(demo06/1).
     demo06(Ans) :-         
-        test_data::listing(Store),
+        directories::listing(Store),
         metrics_lib::count_kids(Store, Ans).
 
     :- public(demo07/1).
     demo07(Ans) :-         
-        test_data::listing(Store),
+        directories::listing(Store),
         metrics_lib::count_folders(Store, Ans).
 
     :- public(demo08/1).
     demo08(Ans) :-         
-        test_data::listing(Store),
+        directories::listing(Store),
         metrics_lib::store_size(Store, Ans).
 
     :- public(demo09/1).
     demo09(Ans) :-         
-        test_data::listing(Store),
+        directories::listing(Store),
         metrics_lib::latest_modification_time(Store, Ans).
 
     :- public(demo09a/1).
@@ -81,19 +87,20 @@
 
 :- object(test2(_Factbase)).
     
-    :- public(demo_zero/0).
-    demo_zero :- 
-        writeln("Dummy").
 
     :- public(demo01/1).
     demo01(Ans) :- 
+        writeln("Latest modification time:"),
         parameter(1, Factbase),
         metrics_lib::latest_modification_time(Factbase, Ans).
 
 :- end_object.
 
-% ?- {'factbase/directories.pl'}
-% ?- directories::listing(X), test2(X)::demo01(Ans).
+% ?- {'factbase/directories.pl'}.
+% ?- {Ans}/(directories::listing(X), test2(X)::demo01(Ans)).
+
+% ?- {'factbase/site_work_sorted.pl'}.
+% ?- {Ans}/(site_work_sorted::listing(X), test2(X)::demo01(Ans)).
 
 
 
