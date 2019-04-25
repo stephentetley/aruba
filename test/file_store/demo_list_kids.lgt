@@ -7,55 +7,46 @@
 % make this dynamic once working...
 :- use_module(factbase/directories).
 
+% Test...
+% ?- {Ans}/(directories::listing(X), list_kids::list_kids(X, Ans)).
 
-:- object(list_kids_simple).
+% Favour passing in the Store as an argument.
+% A parameterized object doesn't have a good "calling convention".
+
+:- object(list_kids).
 
 
-	:- public(test01/1).
-	test01(Ans) :- 
-		directories::listing(Ans).
+    :- public(test01/1).
+    test01(Ans) :- 
+        directories::listing(Ans).
 
-	:- public(cons_name/3).
-	cons_name(Input, Acc, Acc1) :- 
-		file_store_structs::is_folder_object(Input),
-		Input::name(Name),
-		Acc1 = [ Name | Acc ].
+    :- public(cons_name/3).
+    cons_name(Input, Acc, Acc1) :- 
+        file_store_structs::is_folder_object(Input),
+        Input::name(Name),
+        Acc1 = [ Name | Acc ].
 
-	cons_name(_, Acc, Acc).
+    cons_name(_, Acc, Acc).
 
-	:- public(list1/1).
-	list1(Ans) :- 
-		directories::listing(Store),
-		file_store_traversals::all_transform(list_kids_simple::cons_name, Store, [], Ans).
+    :- public(list_backwards/2).
+    list_backwards(Store, Ans) :- 
+        file_store_traversals::all_transform(list_kids::cons_name, Store, [], Ans).
+
+
+    :- public(add_name/3).
+    add_name(Input, DL1, DL2) :- 
+        file_store_structs::is_folder_object(Input),
+        Input::name(Name),
+        difflist::add(Name,DL1, DL2).
+
+    add_name(_, Acc, Acc).
+
+    :- public(list_kids/2).
+    list_kids(Store, Ans) :- 
+        file_store_traversals::all_transform(list_kids::add_name, Store, (X0-X0), DL),
+        difflist::as_list(DL, Ans).
+
 
 :- end_object.
 
-:- object(list_kids(_Filestore)).
-
-
-	:- public(test01/1).
-	test01(Ans) :- 
-		parameter(1, Store),
-		Ans = Store.
-
-	:- public(cons_folder_name/3).
-	cons_folder_name(Input, Acc, Acc1) :- 
-		file_store_structs::is_folder_object(Input),
-		Input::name(Name),
-		Acc1 = [ Name | Acc ].
-
-	cons_folder_name(_, Acc, Acc).
-
-	% This works (i.e produces output) but the calling is wrong "aesthetically" for cons_folder_name
-	% Probably we don't want a parameterized object.
-	% Instead, we might want, e.g.:  list1(Store, Ans) :- ...
-	:- public(list1/1).
-	list1(Ans) :- 
-		parameter(1, Store),
-		file_store_traversals::all_transform(list_kids(Store)::cons_folder_name, Store, [], Ans).
-
-:- end_object.
-
-
-% ?- {'../../proprietary/rtu_firmware.pl'}.
-% ?- {Ans}/(rtu_firmware::listing(X), list_kids(X)::list1(Ans)).
+% {Ans}/(rtu_firmware::listing(X), list_kids_simple::list1(X,Ans)).

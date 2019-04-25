@@ -6,6 +6,8 @@
 
 
 :- initialization((
+    logtalk_load(library(types_loader)),
+    logtalk_load(library(metapredicates_loader)),
     logtalk_load('../../src/aruba/base/base_logtalk.lgt'),
     logtalk_load('../../src/aruba/traversals_lib/walker.lgt'),
     logtalk_load('../../src/aruba/traversals_lib/rewrite.lgt'),
