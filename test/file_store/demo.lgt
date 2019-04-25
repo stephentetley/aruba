@@ -10,7 +10,7 @@
 % a single compund atom _listing_.
 :- use_module(factbase/directories).
 
-:- object(test).
+:- object(demo).
 
     :- public(demo01/1).
     demo01(Ans) :- 
@@ -85,14 +85,14 @@
 
 :- end_object.
 
-:- object(test2(_Factbase)).
+:- object(test2(_Filestore)).
     
 
     :- public(demo01/1).
     demo01(Ans) :- 
         writeln("Latest modification time:"),
-        parameter(1, Factbase),
-        metrics_lib::latest_modification_time(Factbase, Ans).
+        parameter(1, Store),
+        metrics_lib::latest_modification_time(Store, Ans).
 
 :- end_object.
 

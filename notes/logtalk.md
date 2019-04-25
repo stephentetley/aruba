@@ -42,7 +42,7 @@ Hiding variables:
     ?- {'factbase/site_work_sorted.pl'}.
 
     % Run a query, X not shown...
-    ?- {Ans}/(site_work_sorted::listing(X), listing(X)::latest_modifaction_time(Ans)).
+    ?- {Ans}/(site_work_sorted::listing(X), listing(X)::latest_modification_time(Ans)).
 
     % X show, too much output...
-    ?- site_work_sorted::listing(X), listing(X)::latest_modifaction_time(Ans).
+    ?- site_work_sorted::listing(X), listing(X)::latest_modification_time(Ans).

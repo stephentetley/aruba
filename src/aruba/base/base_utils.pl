@@ -6,6 +6,8 @@
 
 :- module(base_utils, 
             [ output_csv/3
+            , nth0_cell/3
+            , nth1_cell/3
             , iso_8601_stamp/2
             , iso_8601_text/2
             , format_file_size/2
@@ -13,6 +15,7 @@
 
 :- use_module(library(csv)).
 :- use_module(library(date)).
+:- use_module(library(lists)).
 
 output_csv(File, Headers, Rows) :-
     setup_call_cleanup(
@@ -21,6 +24,23 @@ output_csv(File, Headers, Rows) :-
               csv_write_stream(Out, Rows, [])
             ),
         close(Out)).
+
+
+nth0_cell(Index, Row, Elem) :- 
+    integer(Index),
+    % ignore the first element which is always the symbol 'row'.
+    Index0 is Index + 1,
+    Row =.. Cells,
+    nth0(Index0, Cells, Elem).
+
+
+nth1_cell(Index, Row, Elem) :- 
+    integer(Index),
+    % ignore the first element which is always the symbol 'row'.
+    Index0 is Index + 1,
+    Row =.. Cells,
+    nth1(Index0, Cells, Elem).
+
 
 % iso_8601_stamp
 % This is so "obvious" we don't / barely need it.

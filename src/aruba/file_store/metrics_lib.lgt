@@ -94,8 +94,8 @@
 %% metrics as message sends to objects
 :- object(listing(_FileStore)).
 
-    :- public(latest_modifaction_time/1).
-    latest_modifaction_time(Ans) :- 
+    :- public(latest_modification_time/1).
+    latest_modification_time(Ans) :- 
         parameter(1,FileStore),
         metrics_lib::latest_modification_time(FileStore, Ans).
 
