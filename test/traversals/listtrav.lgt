@@ -1,12 +1,12 @@
 /*
-    list_traversals.lgt
+    listtrav.lgt
 */
 
 % > & 'C:\Program Files\swipl\bin\swipl.exe'
 % ?- use_module(library(logtalk)).
 % ?- {loader}.
 
-:- object(list_traversals, 
+:- object(listtrav, 
     % implements([rewritep, transformp]),
     imports([rewrite, transform])).
 
@@ -14,23 +14,14 @@
     % without explicit qualification.
     :- meta_predicate(all_rewrite(2, *, *)).    
     all_rewrite(Closure, Input, Ans) :- 
-        ^^all_rewrite_list(Closure, Input, Ans).
+        ::all_rewrite_list(Closure, Input, Ans).
 
-    :- public(add1/2).
     add1(X, Y) :- Y is X + 1.
-
-    :- public(test0/1).
-    test0(Ans) :- 
-        list_traversals::apply_rewrite(list_traversals::add1, 3, Ans).
-
-    :- public(test0a/1).
-    test0a(Ans) :- 
-        list_traversals::apply_rewrite(add1, 3, Ans).
 
 
     :- public(test01/1).
     test01(Ans) :- 
-        all_rewrite(list_traversals::add1, [1,2,3,4,5,6], Ans).
+        ::apply_rewrite(add1, 3, Ans).
 
     :- public(test02/1).
     test02(Ans) :- 
@@ -51,26 +42,27 @@
     test05(Ans) :- 
         all_rewrite(add2, [1,2,3,4,5,6], Ans).
     
-    :- private(guarded_add2/2).
-    :- mode(guarded_add2(+term, -term), one).
-    guarded_add2(X, Y) :- 
+ 
+    safe_add1(X, Y) :- 
         integer(X), 
+        !,
         Y is X + 2.
 
-    guarded_add2(X, X).
+    safe_add1(X, X).
 
     % :- meta_predicate(alltd_rewrite(2, *, *)). 
 
+    % Should this work? Have to check KURE...
     :- public(test06/1).
     test06(Ans) :- 
-        list_traversals::alltd_rewrite(list_traversals::guarded_add2, [1,2,3,4,5,6], Ans).
-
+        ::alltd_rewrite(safe_add1, [1,2,3,4,5,6], Ans).
+    
     :- public(test06a/1).
     test06a(Ans) :- 
-       ::all_rewrite(guarded_add2, [1,2,3,4,5,6], Ans).
-
+        all_rewrite(safe_add1, [1,2,3,4,5,6], Ans).
+    
     :- public(test06b/1).
     test06b(Ans) :- 
-        guarded_add2([1,2,3], Ans).
+        safe_add1([1,2,3], Ans).
 
 :- end_object.

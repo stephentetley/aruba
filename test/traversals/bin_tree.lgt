@@ -34,7 +34,7 @@
     test01a(Ans) :- 
         all_rewrite(add1, empty, Ans).
 
-    % :- public(bin_add1/2).
+
     bin_add1(bin(X, T1, T2), Ans) :- 
         integer(X),
         !, 
@@ -70,5 +70,10 @@
     test01g(Ans) :- 
         test_data1(Tree1),
         ::alltd_rewrite(bin_add1, Tree1, Ans).
+
+    :- public(test01h/1).
+    test01h(Ans) :- 
+        test_data1(Tree1),
+        ::allbu_rewrite(bin_add1, Tree1, Ans).
 
 :- end_object.

@@ -10,5 +10,5 @@
         logtalk_load('../../src/aruba/traversals_lib/transformp.lgt'),
         logtalk_load('../../src/aruba/traversals_lib/rewrite.lgt'),
         logtalk_load('../../src/aruba/traversals_lib/transform.lgt'),
-        logtalk_load('list_traversals.lgt')
+        logtalk_load('listtrav.lgt')
     )).
