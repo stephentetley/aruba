@@ -42,18 +42,18 @@
     :- public(test03b/1).
     test03b(Ans) :-         
         directories::listing(Store),
-        file_store_traversals::all_transform(count_files_aux, Store, 0, Ans).    
+        file_store_transform::all_transform(count_files_aux, Store, 0, Ans).    
 
 
     :- public(test04/1).
     test04(Ans) :-         
         directories::listing(Store),
-        file_store_traversals::id_rewrite(Store, Ans).
+        file_store_rewrite::id_rewrite(Store, Ans).
 
     :- public(test05/1).
     test05(Ans) :-         
         directories::listing(Store),
-        file_store_traversals::alltd_rewrite(file_store_traversals::id_rewrite, Store, Ans).
+        file_store_rewrite::alltd_rewrite(file_store_traversals::id_rewrite, Store, Ans).
 
     :- public(test06/1).
     test06(Ans) :-         
@@ -85,22 +85,7 @@
 
 :- end_object.
 
-:- object(test2(_Filestore)).
-    
 
-    :- public(test01/1).
-    test01(Ans) :- 
-        writeln("Latest modification time:"),
-        parameter(1, Store),
-        metrics_lib::latest_modification_time(Store, Ans).
-
-:- end_object.
-
-% ?- {'factbase/directories.pl'}.
-% ?- {Ans}/(directories::listing(X), test2(X)::test01(Ans)).
-
-% ?- {'factbase/site_work_sorted.pl'}.
-% ?- {Ans}/(site_work_sorted::listing(X), test2(X)::test01(Ans)).
 
 
 

@@ -17,11 +17,11 @@ Load Logtalk:
 
 Load all files:
 
-    ?- logtalk_load('demos_loader.lgt').
+    ?- logtalk_load('demo_loader.lgt').
 
 Alteratively:
 
-    ?- {demos_loader}.
+    ?- {demo_loader}.
 
 Load a demo:
 

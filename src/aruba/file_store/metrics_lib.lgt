@@ -9,27 +9,35 @@
 
 :- object(metrics_lib).
 
+    :- uses(file_store_transform, [all_transform/4]).
+
     :- public(count_kids_aux/3).
     :- mode(count_kids_aux(+term, +term, -term), one).
     :- meta_predicate(count_kids_aux(*, *, *)).
     
     count_kids_aux(folder_object(_,_,_,_), Acc, N) :- 
+        writeln("count_kids_aux folder"),
         N is Acc + 1.
         
     count_kids_aux(file_object(_,_,_,_), Acc, N) :- 
+        writeln("count_kids_aux file"),
         N is Acc + 1.
     
-    count_kids_aux(_, Acc, Acc).
+    count_kids_aux(_, Acc, Acc) :- 
+        writeln("count_kids_aux _").
     
     :- public(count_kids/2).
     count_kids(Fo, Count) :- 
-        file_store_traversals::alltd_transform(metrics_lib::count_kids_aux, Fo, 0, Count), 
+        % file_store_traversals::alltd_transform(count_kids_aux, Fo, 0, Count), 
+        all_transform(count_kids_aux, Fo, 0, Count), 
         !.
 
 
     % count_files
-    :- public(count_files_aux/3).
-    :- mode(count_files_aux(+term, +term, -term), one).
+    % :- public(count_files_aux/3).
+    % :- mode(count_files_aux(+term, +term, -term), one).
+    :- meta_predicate(count_files_aux(*, *, *)).
+
     count_files_aux(Input, Acc, Acc1) :- 
         file_store_structs::is_file_object(Input),        
         Acc1 is Acc + 1.
@@ -38,7 +46,7 @@
 
     :- public(count_files/2).
     count_files(Fo, Count) :- 
-        file_store_traversals::alltd_transform(metrics_lib::count_files_aux, Fo, 0, Count), 
+        file_store_transform::alltd_transform(metrics_lib::count_files_aux, Fo, 0, Count), 
         !.
 
     % count_folders
@@ -53,7 +61,7 @@
 
     :- public(count_folders/2).
     count_folders(Fo, Count) :- 
-        file_store_traversals::alltd_transform(metrics_lib::count_folders_aux, Fo, 0, Count), 
+        file_store_transform::alltd_transform(metrics_lib::count_folders_aux, Fo, 0, Count), 
         !.
 
     % store_size
@@ -66,7 +74,7 @@
 
     :- public(store_size/2).
     store_size(Store, Size) :-
-        file_store_traversals::alltd_transform(metrics_lib::store_size_aux, Store, 0, Size), !.
+        file_store_transform::alltd_transform(metrics_lib::store_size_aux, Store, 0, Size), !.
 
     % latest_modification_time
     :- public(latest_modification_time_aux/3).
@@ -87,19 +95,10 @@
         
     :- public(latest_modification_time/2).
     latest_modification_time(Store, Time) :-
-        file_store_traversals::alltd_transform(metrics_lib::latest_modification_time_aux, Store, 0, Stamp), 
+        file_store_transform::alltd_transform(metrics_lib::latest_modification_time_aux, Store, 0, Stamp), 
         base_utils::iso_8601_text(Stamp, Time),
         !.
 
 :- end_object.	
 
-
-%% metrics as message sends to objects
-:- object(listing(_FileStore)).
-
-    :- public(latest_modification_time/1).
-    latest_modification_time(Ans) :- 
-        parameter(1,FileStore),
-        metrics_lib::latest_modification_time(FileStore, Ans).
-
-:- end_object.        
+      

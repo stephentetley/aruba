@@ -14,6 +14,8 @@
     logtalk_load('../../src/aruba/traversals_lib/rewrite.lgt'),
     logtalk_load('../../src/aruba/traversals_lib/transform.lgt'),
     logtalk_load('../../src/aruba/file_store/objects.lgt'),
-    logtalk_load('../../src/aruba/file_store/traversals.lgt'),
-    logtalk_load('../../src/aruba/file_store/metrics_lib.lgt')
+    logtalk_load('../../src/aruba/file_store/file_store_rewrite.lgt'),
+    logtalk_load('../../src/aruba/file_store/file_store_transform.lgt'),
+    logtalk_load('../../src/aruba/file_store/metrics_lib.lgt'), 
+    logtalk_load('demo.lgt')
 )).
