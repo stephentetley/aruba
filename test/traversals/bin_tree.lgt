@@ -3,7 +3,7 @@
 */
 
 :- object(bin_tree, 
-    imports([rewrite])).
+    imports([rewrite, transform])).
 
     :- meta_predicate(all_rewrite_empty(2, *, *)).    
     all_rewrite_empty(_, empty, empty).
@@ -14,10 +14,23 @@
         ::apply_rewrite(Closure, X2, Y2),
         Ans = bin(A, Y1, Y2).
 
-    % :- meta_predicate(choice_rewrite(2, 2, *, *)).
+
     :- meta_predicate(all_rewrite(2, *, *)).
     all_rewrite(Closure, Input, Ans) :- 
         ::choice_rewrite(all_rewrite_bin(Closure), all_rewrite_empty(Closure), Input, Ans).
+
+
+    :- meta_predicate(all_tranform_empty(3, *, *, *)).    
+    all_transform_empty(_, empty, Acc, Acc).
+            
+    :- meta_predicate(all_transform_bin(3, *, *, *)).    
+    all_transform_bin(Closure, bin(_, X1, X2), Acc, Ans) :-
+        ::apply_transform(Closure, X1, Acc, Acc1),
+        ::apply_transform(Closure, X2, Acc1, Ans).  
+
+    :- meta_predicate(all_transform(3, *, *, *)).
+    all_transform(Closure, Input, Acc, Ans) :- 
+        ::choice_transform(all_transform_bin(Closure), all_transform_empty(Closure), Input, Acc, Ans).
 
 
     :- public(test_data1/1).
@@ -75,5 +88,13 @@
     test01h(Ans) :- 
         test_data1(Tree1),
         ::allbu_rewrite(bin_add1, Tree1, Ans).
+
+    count_labels(bin(_, _, _), Acc, Ans) :- Ans is Acc + 1, !.
+    count_labels(_, Acc, Acc).
+
+    :- public(test02/1).
+    test02(Ans) :- 
+        test_data1(Tree1),
+        ::alltd_transform(count_labels, Tree1, 0, Ans).
 
 :- end_object.

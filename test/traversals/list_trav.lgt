@@ -6,7 +6,7 @@
 % ?- use_module(library(logtalk)).
 % ?- {loader}.
 
-:- object(listtrav, 
+:- object(list_trav, 
     % implements([rewritep, transformp]),
     imports([rewrite, transform])).
 
@@ -15,6 +15,11 @@
     :- meta_predicate(all_rewrite(2, *, *)).    
     all_rewrite(Closure, Input, Ans) :- 
         ::all_rewrite_list(Closure, Input, Ans).
+
+    :- meta_predicate(all_transform(3, *, *, *)).    
+    all_transform(Closure, Input, Acc, Ans) :- 
+        ::all_transform_list(Closure, Input, Acc, Ans).
+
 
     add1(X, Y) :- Y is X + 1.
 
@@ -64,5 +69,18 @@
     :- public(test06b/1).
     test06b(Ans) :- 
         safe_add1([1,2,3], Ans).
+
+    
+    sum(X, Acc, Ans) :- 
+        integer(X), 
+        Ans is Acc + 1, !.
+    sum([], Acc, Acc).
+    sum([_|_], Acc, Acc).
+
+
+    :- public(test07/1).
+    test07(Ans) :- 
+        ::all_transform(sum, [1,2,3,4], 0, Ans).
+        
 
 :- end_object.
