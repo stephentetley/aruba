@@ -11,6 +11,8 @@
 
     :- public(count_kids_aux/3).
     :- mode(count_kids_aux(+term, +term, -term), one).
+    :- meta_predicate(count_kids_aux(*, *, *)).
+    
     count_kids_aux(folder_object(_,_,_,_), Acc, N) :- 
         N is Acc + 1.
         
@@ -67,24 +69,25 @@
         file_store_traversals::alltd_transform(metrics_lib::store_size_aux, Store, 0, Size), !.
 
     % latest_modification_time
-    :- public(latest_modification_aux/3).
-    :- mode(latest_modification_aux(+term, +term, -term), one).
-    latest_modification_aux(file_object(_, Stamp, _, _), T0, Latest) :-
+    :- public(latest_modification_time_aux/3).
+    :- meta_predicate(latest_modification_time_aux(*, *, *)).
+    :- mode(latest_modification_time_aux(+term, +term, -term), one).
+    latest_modification_time_aux(file_object(_, Stamp, _, _), T0, Latest) :-
         base_utils::iso_8601_stamp(Stamp, T1), 
         Latest is max(T0, T1),
         !.
         
-    latest_modification_aux(folder_object(_, Stamp, _, _), T0, Latest) :- 
+    latest_modification_time_aux(folder_object(_, Stamp, _, _), T0, Latest) :- 
         base_utils::iso_8601_stamp(Stamp, T1),
         Latest is max(T0, T1), 
         !.
 
-    latest_modification_aux(Obj, T0, T0) :- 
+    latest_modification_time_aux(Obj, T0, T0) :- 
         file_store_structs::is_file_store(Obj), !.
         
     :- public(latest_modification_time/2).
     latest_modification_time(Store, Time) :-
-        file_store_traversals::alltd_transform(metrics_lib::latest_modification_aux, Store, 0, Stamp), 
+        file_store_traversals::alltd_transform(metrics_lib::latest_modification_time_aux, Store, 0, Stamp), 
         base_utils::iso_8601_text(Stamp, Time),
         !.
 

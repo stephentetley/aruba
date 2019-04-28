@@ -26,18 +26,18 @@
 	:- public(identity/2).
 	identity(X,X).
 
-	:- public(test1/1).
-	test1(Xs) :- 
+	:- public(test01/1).
+	test01(Xs) :- 
 		get_worklist(Rows),
 		meta::map( ::identity, Rows, Xs).
 
 	:- public(test2/1).
-	test2(Xs) :- 
+	test02(Xs) :- 
 		get_worklist(Rows),
 		meta::map( ::get_sainumber, Rows, Xs).
 
 	:- public(test3/1).
-	test3(Xs) :- 
+	test03(Xs) :- 
 		get_worklist(Rows),
 		meta::map( demo_csv::get_info, Rows, Xs).
 

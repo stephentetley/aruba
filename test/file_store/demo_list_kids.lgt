@@ -13,7 +13,7 @@
 % Favour passing in the Store as an argument.
 % A parameterized object doesn't have a good "calling convention".
 
-:- object(list_kids).
+:- object(demo_list_kids).
 
 
     :- public(test01/1).

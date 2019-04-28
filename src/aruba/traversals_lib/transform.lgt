@@ -21,6 +21,7 @@
     all_transform_list(Goal1, Input, Acc, Ans) :-
         all_transform_list_aux(Input, Goal1, Acc, Ans).
     
+    :- meta_predicate(all_transform_list_aux(*, 3, *,*)).
     all_transform_list_aux([], _, Ans, Ans).
         
     
