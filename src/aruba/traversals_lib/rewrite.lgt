@@ -19,15 +19,23 @@
     fail_rewrite(_, _) :- false.        
 
 
-    write_error(Error) :-
-        write('  ERROR: '), writeq(Error), nl, fail.
-
 
     :- public(apply_rewrite/3).
     :- meta_predicate(apply_rewrite(2, *, *)).
     :- mode(apply_rewrite(+callable, +term, -term), one).
     apply_rewrite(Closure, Input, Ans) :-
-        catch( call(Closure, Input, Ans), Error, write_error).
+        catch( call(Closure, Input, Ans), Error, (writeln(Error), false)).
+        % call(Closure, Input, Ans).
+
+
+    :- public(choice_rewrite/4).
+    :- meta_predicate(choice_rewrite(2, 2, *, *)).
+    :- mode(choice_rewrite(+callable, +callable, +term, -term), one).
+    choice_rewrite(Closure1, Closure2, Input, Ans) :- 
+        (   apply_rewrite(Closure1, Input, Ans)
+        ;   apply_rewrite(Closure2, Input, Ans)
+        ), 
+        !.
 
 
     :- meta_predicate(all_rewrite_list_aux(*, 2, *, *)).
@@ -44,6 +52,17 @@
     :- mode(all_rewrite_list(+callable, +term, -term), one).
     all_rewrite_list(Goal1, Input, Ans) :-
         all_rewrite_list_aux(Input, Goal1, [], Ans).
+
+
+
+    % alltd_rewrite
+    :- public(alltd_rewrite/3).
+    :- meta_predicate(alltd_rewrite(2, *, *)).
+    :- mode(alltd_rewrite(+callable, +term, -term), one).
+    alltd_rewrite(R1, Input, Ans) :-
+        apply_rewrite(R1, Input, A1),
+        ::all_rewrite(::alltd_rewrite(R1), A1, Ans).
+
 
 
     :- meta_predicate(any_rewrite_list_aux(*, 2, *, *)).
@@ -81,13 +100,7 @@
             {(reverse(Acc, Front), append(Front,[X1|Xs],Ans))}
         ;   one_rewrite_list_aux(Xs, Goal1, [X|Acc], Ans)).
 
-    % alltd_rewrite
-    :- public(alltd_rewrite/3).
-    :- meta_predicate(alltd_rewrite(2, *, *)).
-    :- mode(alltd_rewrite(+callable, +term, -term), zero_or_more).
-    alltd_rewrite(R1, Input, Ans) :-
-        apply_rewrite(R1, Input, A1),
-        ::all_rewrite(alltd_rewrite(R1), A1, Ans).
+
 
     % anytd_rewrite
     :- public(anytd_rewrite/3).

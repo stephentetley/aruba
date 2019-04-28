@@ -59,10 +59,11 @@
 
     guarded_add2(X, X).
 
+    % :- meta_predicate(alltd_rewrite(2, *, *)). 
 
     :- public(test06/1).
     test06(Ans) :- 
-        ::alltd_rewrite(list_traversals::guarded_add2, [1,2,3,4,5,6], Ans).
+        list_traversals::alltd_rewrite(list_traversals::guarded_add2, [1,2,3,4,5,6], Ans).
 
     :- public(test06a/1).
     test06a(Ans) :- 
