@@ -1,7 +1,5 @@
 # Notes
 
-
-
 In VS Code start a terminal, change directory to test\file_store
 
     > cd test\file_store
@@ -16,11 +14,15 @@ Load Logtalk:
 
 Load all files:
 
-    ?- logtalk_load('file_store_test_loader.lgt').
+    ?- logtalk_load('demos_loader.lgt').
 
 Alteratively:
 
-    ?- {file_store_test_loader}.
+    ?- {demos_loader}.
+
+Load a demo:
+
+    ?- {demo}.
 
 Dummy:
 
@@ -32,7 +34,7 @@ Hiding variables:
     % Swi-Prolog Yall...
     ?- use_module(library(yall)).
 
-    % Logtalk...
+    % Logtalk (this is already loaded by the demos loader)...
     ?- {library(metapredicates_loader)}.
 
     % or...
