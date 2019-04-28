@@ -4,6 +4,7 @@
     License: BSD 3 Clause
 */   
 
+:- use_module(library(lists)).
 
 :- category(rewrite).
     
@@ -17,27 +18,30 @@
     fail_rewrite(_, _) :- false.        
 
     :- public(apply_rewrite/3).
-    :- meta_predicate(apply_rewrite(2,*,*)).
-    :- mode(apply_rewrite(+callable, +term, -term), zero_or_more).
+    :- meta_predicate(apply_rewrite(2, *, *)).
+    :- mode(apply_rewrite(+callable, +term, -term), one).
     apply_rewrite(Goal1, Input, Ans) :-
         catch( call(Goal1, Input, Ans),
             _,
             false).
 
 
+    :- meta_predicate(all_rewrite_list_aux(*, 2, *, *)).
+    all_rewrite_list_aux([], _, Acc, Ans) :-
+        lists::reverse(Acc, Ans).
+            
+    all_rewrite_list_aux([X|Xs], Goal1, Acc, Ans) :-
+        apply_rewrite(Goal1, X, A1),
+        all_rewrite_list_aux(Xs, Goal1, [A1|Acc], Ans).
+
     % all_rewrite_list
     :- public(all_rewrite_list/3).
-    :- meta_predicate(all_rewrite_list(2,*,*)).
-    :- mode(all_rewrite_list(+callable, +term, -term), zero_or_more).
+    :- meta_predicate(all_rewrite_list(2, *, *)).
+    :- mode(all_rewrite_list(+callable, +term, -term), one).
     all_rewrite_list(Goal1, Input, Ans) :-
         all_rewrite_list_aux(Input, Goal1, [], Ans).
 
-    all_rewrite_list_aux([], _, Acc, Ans) :-
-        {reverse(Acc, Ans)}.
-        
-    all_rewrite_list_aux([X|Xs], Goal1, Acc, Ans) :-
-        ::apply_rewrite(Goal1, X, A1),
-        all_rewrite_list_aux(Xs, Goal1, [A1|Acc], Ans).
+
 
     % any_rewrite_list
     :- public(any_rewrite_list/3).
