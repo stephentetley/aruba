@@ -1,5 +1,5 @@
 /*
-    listtrav.lgt
+    list_trav.lgt
 */
 
 % > & 'C:\Program Files\swipl\bin\swipl.exe'
