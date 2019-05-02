@@ -38,6 +38,13 @@
         ;   apply_rewrite(Closure2, Input, Ans)
         ).
 
+    :- public(try_rewrite/3).
+    :- meta_predicate(try_rewrite(2, *, *)).
+    :- mode(try_rewrite(+callable, +term, -term), one).
+    try_rewrite(Closure, Input, Ans) :-
+        choice_rewrite(Closure, id_rewrite, Input, Ans).
+
+
     /* all_rewrites */
 
     :- meta_predicate(all_rewrite_list_aux(*, 2, *, *)).
@@ -113,15 +120,13 @@
         false.
 
 
-    one_rewrite_list_aux([X|Rest], Goal1, Acc, Ans) :-
+    one_rewrite_list_aux([X|Rest], Closure, Acc, Ans) :-
         (   ::apply_rewrite(Closure, X, X1) -> 
-            (   difflist::add(X1, Acc, Acc1), 
-                difflist::append(Acc1, Rest, Acc2),
-                difflist::as_list(Acc2, Ans)
-            )
-        ;   (   difflist::add(X, Acc, Acc1), 
-                one_rewrite_list_aux(Rest, Closure, Acc1, Ans)
-            )
+            difflist::add(X1, Acc, Acc1), 
+            difflist::append(Acc1, Rest, Acc2),
+            difflist::as_list(Acc2, Ans)
+        ;   difflist::add(X, Acc, Acc1), 
+            one_rewrite_list_aux(Rest, Closure, Acc1, Ans)
         ).
 
 
@@ -140,11 +145,9 @@
     :- meta_predicate(onetd_rewrite(2,*,*)).
     :- mode(alltd_rewrite(+callable, +term, -term), zero_or_more).
     onetd_rewrite(Closure, Input, Ans) :-
-        (   ::apply_rewrite(Closure, Input, Ans)
-        ;   ::one_rewrite( ::onetd_rewrite(Closure), Input, Ans)).
-
-
-
+        (   apply_rewrite(Closure, Input, Ans)
+        ;   ::one_rewrite( ::onetd_rewrite(Closure), Input, Ans)
+        ).
 
 
 :- end_category.

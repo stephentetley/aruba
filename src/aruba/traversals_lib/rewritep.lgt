@@ -6,6 +6,11 @@
 
 :- protocol(rewritep).
     
+    :- info([
+        comment is 'Rewrites. No context.',
+        see_also is [transformp, ctx_rewritep]
+    ]).
+
     :- public(all_rewrite/3).
     :- meta_predicate(all_rewrite(2, *, *)).
     :- mode(all_rewrite(+callable, +term, -term), one).

@@ -7,6 +7,12 @@
 
 :- protocol(transformp).
 
+    :- info([
+        comment is 'Transformations. No context.',
+        see_also is [rewritep, ctx_transformp]
+    ]).
+
+
 	:- public(all_transform/4).
     :- meta_predicate(all_transform(3, *, *, *)).
 	:- mode(all_transform(+callable, +term, +term, -term), zero_or_more).
