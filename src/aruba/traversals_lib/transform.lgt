@@ -9,7 +9,7 @@
 
     :- public(apply_transform/4).
     :- meta_predicate(apply_transform(3, *, *, *)).
-    :- mode(apply_transform(+callable, +term, +term, -term), one).
+    :- mode(apply_transform(+callable, +term, +term, -term), zero_or_one).
     apply_transform(Closure, Input, Acc, Ans) :-
         catch(  call(Closure, Input, Acc, Ans),
                 Error,
@@ -17,7 +17,7 @@
 
     :- public(choice_transform/5).
     :- meta_predicate(choice_transform(3, 3, *, *, *)).
-    :- mode(choice_transform(+callable, +callable, +term, +term, -term), one).
+    :- mode(choice_transform(+callable, +callable, +term, +term, -term), zero_or_more).
     choice_transform(Closure1, Closure2, Input, Acc, Ans) :- 
         (   apply_transform(Closure1, Input, Acc, Ans), !
         ;   apply_transform(Closure2, Input, Acc, Ans)
@@ -42,21 +42,21 @@
     % Transform all the elements in a list.
     :- public(all_transform_list/4).
     :- meta_predicate(all_transform_list(3, *, *, *)).
-    :- mode(all_transform_list(+callable, +term, +term, -term), one).    
+    :- mode(all_transform_list(+callable, +term, +term, -term), zero_or_more).    
     all_transform_list(Closure, Input, Acc, Ans) :-
         all_transform_list_aux(Input, Closure, Acc, Ans).
     
 
     :- public(alltd_transform/4).
     :- meta_predicate(alltd_transform(3, *, *, *)).
-    :- mode(alltd_transform(+callable, +term, +term, -term), one).
+    :- mode(alltd_transform(+callable, +term, +term, -term), zero_or_more).
     alltd_transform(Closure, Input, Acc, Ans) :-
         apply_transform(Closure, Input, Acc, A1),
         ::all_transform(::alltd_transform(Closure), Input, A1, Ans).
 
     :- public(allbu_transform/4).
     :- meta_predicate(allbu_transform(3, *, *, *)).
-    :- mode(allbu_transform(+callable, +term, +term, -term), one).
+    :- mode(allbu_transform(+callable, +term, +term, -term), zero_or_more).
     allbu_transform(Closure, Input, Acc, Ans) :-
         ::all_transform(::allbu_transform(Closure), Input, Acc, A1),
         apply_transform(Closure, Input, A1, Ans).
@@ -74,7 +74,7 @@
 
     :- public(one_transform_list/4).
     :- meta_predicate(one_transform_list(3, *, *, *)).    
-    :- mode(one_transform_list(+callable, +term, +term, -term), one).        
+    :- mode(one_transform_list(+callable, +term, +term, -term), zero_or_more).        
     one_transform_list(Goal1, Input, Acc, Ans) :-
         one_transform_list_aux(Input, Goal1, Acc, Ans).
     

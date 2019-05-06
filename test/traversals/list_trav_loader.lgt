@@ -1,5 +1,5 @@
 /*
-    loader.lgt
+    list_trav_loader.lgt
 */
 
 :- initialization((

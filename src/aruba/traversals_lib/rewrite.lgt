@@ -22,7 +22,7 @@
 
     :- public(apply_rewrite/3).
     :- meta_predicate(apply_rewrite(2, *, *)).
-    :- mode(apply_rewrite(+callable, +term, -term), one).
+    :- mode(apply_rewrite(+callable, +term, -term), zero_or_one).
     apply_rewrite(Closure, Input, Ans) :-
         catch(  call(Closure, Input, Ans), 
                 Error, 
@@ -32,7 +32,7 @@
 
     :- public(choice_rewrite/4).
     :- meta_predicate(choice_rewrite(2, 2, *, *)).
-    :- mode(choice_rewrite(+callable, +callable, +term, -term), one).
+    :- mode(choice_rewrite(+callable, +callable, +term, -term), zero_or_more).
     choice_rewrite(Closure1, Closure2, Input, Ans) :- 
         (   apply_rewrite(Closure1, Input, Ans), !
         ;   apply_rewrite(Closure2, Input, Ans)
@@ -40,7 +40,7 @@
 
     :- public(try_rewrite/3).
     :- meta_predicate(try_rewrite(2, *, *)).
-    :- mode(try_rewrite(+callable, +term, -term), one).
+    :- mode(try_rewrite(+callable, +term, -term), zero_or_one).
     try_rewrite(Closure, Input, Ans) :-
         choice_rewrite(Closure, id_rewrite, Input, Ans).
 
@@ -59,7 +59,7 @@
     % all_rewrite_list
     :- public(all_rewrite_list/3).
     :- meta_predicate(all_rewrite_list(2, *, *)).
-    :- mode(all_rewrite_list(+callable, +term, -term), one).
+    :- mode(all_rewrite_list(+callable, +term, -term), zero_or_one).
     all_rewrite_list(Closure, Input, Ans) :-
         all_rewrite_list_aux(Input, Closure, X-X, Ans).
 
@@ -68,7 +68,7 @@
     % alltd_rewrite
     :- public(alltd_rewrite/3).
     :- meta_predicate(alltd_rewrite(2, *, *)).
-    :- mode(alltd_rewrite(+callable, +term, -term), one).
+    :- mode(alltd_rewrite(+callable, +term, -term), zero_or_one).
     alltd_rewrite(Closure, Input, Ans) :-
         apply_rewrite(Closure, Input, A1),
         ::all_rewrite( ::alltd_rewrite(Closure), A1, Ans).
@@ -77,7 +77,7 @@
     % allbu_rewrite
     :- public(allbu_rewrite/3).
     :- meta_predicate(allbu_rewrite(2,*,*)).
-    :- mode(allbu_rewrite(+callable, +term, -term), one).
+    :- mode(allbu_rewrite(+callable, +term, -term), zero_or_one).
     allbu_rewrite(Closure, Input, Ans) :-
         ::all_rewrite( ::alltd_rewrite(Closure), Input, A1),
         apply_rewrite(Closure, A1, Ans).
