@@ -62,13 +62,19 @@
     test01h(Ans) :- 
         test_data1(Tree1),
         bin_tree::allbu_rewrite(bin_add_one, Tree1, Ans).
-
+    
+    :- public(count_labels/3).
     count_labels(bin(_, _, _), Acc, Ans) :- Ans is Acc + 1, !.
-    count_labels(_, Acc, Acc).
+    
+    count_labels(empty, Acc, Acc).
 
     :- public(test02/1).
     test02(Ans) :- 
         test_data1(Tree1),
-        bin_tree::alltd_transform(count_labels, Tree1, 0, Ans).
+        bin_tree::alltd_transform(bin_tree_test::count_labels, Tree1, 0, Ans), !.
+
+    :- public(test02a/1).
+    test02a(Ans) :- 
+        bin_tree::all_transform(bin_tree_test::count_labels, bin(1, empty, empty), 0, Ans).
 
 :- end_object.

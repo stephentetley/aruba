@@ -71,17 +71,14 @@
     one_rewrite(_, _, _) :- false.
 
 
-    :- meta_predicate(all_transform_empty(3, *, *, *)).    
-    all_transform_empty(_, empty, Acc, Acc).
+    :- meta_predicate(all_transform(3, *, *, *)).    
+    all_transform(_, empty, Acc, Acc).
             
-    :- meta_predicate(all_transform_bin(3, *, *, *)).    
-    all_transform_bin(Closure, bin(_, X1, X2), Acc, Ans) :-
+    
+    all_transform(Closure, bin(_, X1, X2), Acc, Ans) :-
         ::apply_transform(Closure, X1, Acc, Acc1),
         ::apply_transform(Closure, X2, Acc1, Ans).  
 
-    :- meta_predicate(all_transform(3, *, *, *)).
-    all_transform(Closure, Input, Acc, Ans) :- 
-        ::choice_transform(all_transform_bin(Closure), all_transform_empty(Closure), Input, Acc, Ans).
-
+    
 
 :- end_object.
