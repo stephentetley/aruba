@@ -71,6 +71,9 @@
     one_rewrite(_, _, _) :- false.
 
 
+    :- meta_predicate(apply_transform(3, *, *, *)).
+    :- meta_predicate(alltd_transform(3, *, *, *)).
+
     :- meta_predicate(all_transform(3, *, *, *)).    
     all_transform(_, empty, Acc, Acc).
             
@@ -78,7 +81,7 @@
     all_transform(Closure, bin(_, X1, X2), Acc, Ans) :-
         ::apply_transform(Closure, X1, Acc, Acc1),
         ::apply_transform(Closure, X2, Acc1, Ans).  
-
     
+
 
 :- end_object.

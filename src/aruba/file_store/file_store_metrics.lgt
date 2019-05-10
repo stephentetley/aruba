@@ -7,9 +7,21 @@
 % NOTE
 % aux functions have to be public (protected doesn't work).
 
-:- object(metrics_lib).
+:- object(file_store_metrics).
 
     :- uses(file_store_transform, [all_transform/4]).
+
+    :- public(modification_timestamp/2).
+    modification_timestamp(Fo,Stamp) :- 
+        file_store_structs::is_file_object(Fo),
+        file_store_structs::file_object_modification_time(Fo,Text),
+        base_utils::iso_8601_stamp(Text,Stamp).
+    
+    modification_timestamp(Fo,Stamp) :- 
+        file_store_structs::is_folder_object(Fo),
+        file_store_structs::folder_object_modification_time(Fo,Text),
+        base_utils::iso_8601_stamp(Text,Stamp).
+
 
     :- public(count_kids_aux/3).
     :- mode(count_kids_aux(+term, +term, -term), one).

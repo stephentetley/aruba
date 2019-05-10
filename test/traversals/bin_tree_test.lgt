@@ -76,5 +76,10 @@
     :- public(test02a/1).
     test02a(Ans) :- 
         bin_tree::all_transform(bin_tree_test::count_labels, bin(1, empty, empty), 0, Ans).
+    
+    :- public(test02b/1).
+    test02b(Ans) :- 
+        test_data1(Tree1),
+        bin_tree::alltd_transform(count_labels, Tree1, 0, Ans), !.
 
 :- end_object.
