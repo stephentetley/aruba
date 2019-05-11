@@ -32,12 +32,12 @@
     :- public(test03/1).
     test03(Ans) :-         
         directories::listing(Store),
-        metrics_lib::count_files(Store, Ans).
+        file_store_metrics::count_files(Store, Ans).
 
     :- public(test03a/1).
     test03a(Ans) :-         
         directories::listing(Store),
-        metrics_lib::count_files_aux(Store, 0, Ans).     
+        file_store_metrics::count_files_aux(Store, 0, Ans).     
 
     :- public(test03b/1).
     test03b(Ans) :-         
@@ -58,22 +58,22 @@
     :- public(test06/1).
     test06(Ans) :-         
         directories::listing(Store),
-        metrics_lib::count_kids(Store, Ans).
+        file_store_metrics::count_kids(Store, Ans).
 
     :- public(test07/1).
     test07(Ans) :-         
         directories::listing(Store),
-        metrics_lib::count_folders(Store, Ans).
+        file_store_metrics::count_folders(Store, Ans).
 
     :- public(test08/1).
     test08(Ans) :-         
         directories::listing(Store),
-        metrics_lib::store_size(Store, Ans).
+        file_store_metrics::store_size(Store, Ans).
 
     :- public(test09/1).
     test09(Ans) :-         
         directories::listing(Store),
-        metrics_lib::latest_modification_time(Store, Ans).
+        file_store_metrics::latest_modification_time(Store, Ans).
 
     :- public(test09a/1).
     test09a(Ans) :- 
@@ -81,7 +81,7 @@
 
     :- public(test09b/1).
     test09b(Ans) :- 
-        metrics_lib::latest_modification_aux(file_object("assetnames.pl", "2018-07-19T10:34:00", '-a----', 758496), 1526637060.0, Ans).
+        file_store_metrics::latest_modification_aux(file_object("assetnames.pl", "2018-07-19T10:34:00", '-a----', 758496), 1526637060.0, Ans).
 
 :- end_object.
 

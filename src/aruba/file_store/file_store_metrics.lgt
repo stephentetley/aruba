@@ -1,5 +1,5 @@
 /*
-    metrics_lib.lgt
+    file_store_metrics.lgt
     Copyright (c) Stephen Tetley 2019
     License: BSD 3 Clause
 */   
@@ -10,17 +10,6 @@
 :- object(file_store_metrics).
 
     :- uses(file_store_transform, [all_transform/4]).
-
-    :- public(modification_timestamp/2).
-    modification_timestamp(Fo,Stamp) :- 
-        file_store_structs::is_file_object(Fo),
-        file_store_structs::file_object_modification_time(Fo,Text),
-        base_utils::iso_8601_stamp(Text,Stamp).
-    
-    modification_timestamp(Fo,Stamp) :- 
-        file_store_structs::is_folder_object(Fo),
-        file_store_structs::folder_object_modification_time(Fo,Text),
-        base_utils::iso_8601_stamp(Text,Stamp).
 
 
     :- public(count_kids_aux/3).
@@ -58,7 +47,7 @@
 
     :- public(count_files/2).
     count_files(Fo, Count) :- 
-        file_store_transform::alltd_transform(metrics_lib::count_files_aux, Fo, 0, Count), 
+        file_store_transform::alltd_transform(file_store_metrics::count_files_aux, Fo, 0, Count), 
         !.
 
     % count_folders
@@ -73,7 +62,7 @@
 
     :- public(count_folders/2).
     count_folders(Fo, Count) :- 
-        file_store_transform::alltd_transform(metrics_lib::count_folders_aux, Fo, 0, Count), 
+        file_store_transform::alltd_transform(file_store_metrics::count_folders_aux, Fo, 0, Count), 
         !.
 
     % store_size
@@ -86,7 +75,7 @@
 
     :- public(store_size/2).
     store_size(Store, Size) :-
-        file_store_transform::alltd_transform(metrics_lib::store_size_aux, Store, 0, Size), !.
+        file_store_transform::alltd_transform(file_store_metrics::store_size_aux, Store, 0, Size), !.
 
     % latest_modification_time
     :- public(latest_modification_time_aux/3).
@@ -107,7 +96,7 @@
         
     :- public(latest_modification_time/2).
     latest_modification_time(Store, Time) :-
-        file_store_transform::alltd_transform(metrics_lib::latest_modification_time_aux, Store, 0, Stamp), 
+        file_store_transform::alltd_transform(file_store_metrics::latest_modification_time_aux, Store, 0, Stamp), 
         base_utils::iso_8601_text(Stamp, Time),
         !.
 
