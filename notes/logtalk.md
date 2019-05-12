@@ -4,7 +4,7 @@ In VS Code start a terminal, change directory to test\file_store
 
     > cd test\file_store
 
-If you forget this before running SWI Prolog you can use chdir/1 to move to 
+If you forget this before running SWI Prolog you can use chdir/1 to move to
 the test directory.
 
 Run the SWI Prolog toplevel (must include the ampersand):

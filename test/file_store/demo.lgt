@@ -4,6 +4,8 @@
     License: BSD 3 Clause
 */  
 
+:- use_module(library(http/json)).
+
 
 % Use the Prolog test module directly
 % Wrapping it in a Logtalk object is a bit pyrrhic as it only exposes 
@@ -19,15 +21,21 @@
 
     :- public(test02a/0).
     test02a :- 
-        file_store_structs::is_file_object(file_object("actions_xsb.pl", "2018-05-18T09:51:00", '-a----', 115)).
+        file_store_structs::is_file_object(file_object("actions_xsb.pl", "2018-05-18T09:51:00", "-a----", 115)).
 
     :- public(test02b/0).
     test02b :- 
-        file_store_structs::is_file_object(folder_object("notes", "2018-07-30T10:52:00", 'd-----', [])).
+        file_store_structs::is_file_object(folder_object("notes", "2018-07-30T10:52:00", "d-----", [])).
     
     :- public(test02c/0).
     test02c :- 
-        file_store_structs::is_folder_object(folder_object("notes", "2018-07-30T10:52:00", 'd-----', [])).
+        file_store_structs::is_folder_object(folder_object("notes", "2018-07-30T10:52:00", "d-----", [])).
+
+    :- public(test02d/1).
+    test02d(Ans) :- 
+        Fo = file_object("actions_xsb.pl", "2018-05-18T09:51:00", "-a----", 115),
+        file_store_operations::file_object_extension(Fo, Ans).
+
 
     :- public(test03/1).
     test03(Ans) :-         
@@ -81,12 +89,28 @@
 
     :- public(test09b/1).
     test09b(Ans) :- 
-        file_store_metrics::latest_modification_aux(file_object("assetnames.pl", "2018-07-19T10:34:00", '-a----', 758496), 1526637060.0, Ans).
+        file_store_metrics::latest_modification_aux(file_object("assetnames.pl", "2018-07-19T10:34:00", "-a----", 758496), 1526637060.0, Ans).
 
 :- end_object.
 
 
+:- object(demo_json).
 
+
+
+
+    :- public(test01/0).
+    test01 :- 
+        File = file_object("actions_xsb.pl", "2018-05-18T09:51:00", "-a----", 115),
+        Folder = folder_object("code", "2018-05-18T09:52:00", "-a----", [File]),
+        Store = file_store("D:\\coding\\prolog\\aruba", [Folder]),
+        file_store_operations::json_write_file_store("output/test1.json", Store).
+
+    :- public(test02/1).
+    test02(Store) :- 
+        file_store_operations::json_read_file_store("output/test1.json", Store).
+
+:- end_object.
 
 
 
