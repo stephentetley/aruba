@@ -91,6 +91,19 @@
     test09b(Ans) :- 
         file_store_metrics::latest_modification_aux(file_object("assetnames.pl", "2018-07-19T10:34:00", "-a----", 758496), 1526637060.0, Ans).
 
+    :- public(test10/0).
+    test10 :- 
+        F1 = folder_object("notes", "2018-07-30T10:52:00", "d-----", []),
+        file_store_operations::folder_is_empty(F1).
+
+    :- public(test10b/0).
+    test10b :- 
+        F0 = file_object("assetnames.pl", "2018-07-19T10:34:00", "-a----", 758496),
+        F1 = folder_object("notes", "2018-07-30T10:52:00", "d-----", [F0]),
+        file_store_operations::folder_is_empty(F1).
+
+
+
 :- end_object.
 
 
@@ -109,6 +122,13 @@
     :- public(test02/1).
     test02(Store) :- 
         file_store_operations::json_read_file_store("output/test1.json", Store).
+
+
+    :- public(test03/0).
+    test03 :- 
+        directories::listing(Store),
+        file_store_operations::json_write_file_store("output/test2.json", Store).
+
 
 :- end_object.
 

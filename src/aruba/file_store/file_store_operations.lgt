@@ -68,12 +68,16 @@
         file_store_structs::folder_object_modification_time(Fo,Text),
         base_utils::iso_8601_stamp(Text,Stamp).
 
-    % Does not return dot
+    % Does not return the dot
     :- public(file_object_extension/2).
     file_object_extension(Fo, Extension) :-
-        file_store_structs::file_object_name(Fo, FileName),
+        file_store_structs::file_object_name(Fo, FileName), !, 
         pcre::re_matchsub("\\.([^\\.]+)\\Z"/s, FileName, Dict, []),
         get_dict(1, Dict, Extension).
+
+    :- public(folder_is_empty/1).
+    folder_is_empty(Fo) :-
+        file_store_structs::folder_object_kids(Fo, []), !.
 
 
 
